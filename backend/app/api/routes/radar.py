@@ -10,6 +10,8 @@ from app.api.schemas import CitationOut, RadarEntryOut, RadarOut, ReasonOut
 from app.db.models import Student
 from app.db.repositories import documents as docs_repo
 from app.db.repositories import students as students_repo
+from app.language.phrases import Language
+from app.language.render import bucket_label, layer_label
 from app.eligibility.layers import LAYER_LABEL
 from app.eligibility.radar import RadarEntry, build_radar
 
@@ -27,14 +29,14 @@ def _reason_out(reason) -> ReasonOut:
     )
 
 
-def _entry_out(entry: RadarEntry) -> RadarEntryOut:
+def _entry_out(entry: RadarEntry, language: Language) -> RadarEntryOut:
     return RadarEntryOut(
         exam_name=entry.exam_name,
         source_id=entry.source_id,
         bucket=entry.bucket,
-        headline=entry.headline,
+        headline=bucket_label(entry.bucket, language),
         layer=entry.layer,
-        layer_label=LAYER_LABEL[entry.layer],
+        layer_label=layer_label(entry.layer, language),
         reasons=[_reason_out(r) for r in entry.reasons],
         rules_known=entry.rules_known,
         closing_text=entry.closing_text,
@@ -49,6 +51,7 @@ def read_radar(
     student: Student = Depends(get_student_or_404),
     db: Session = Depends(get_db),
     today: date | None = Query(default=None),
+    lang: Language = Query(default=Language.ENGLISH),
 ) -> RadarOut:
     profile = students_repo.to_profile(student)
     radar = build_radar(
@@ -58,9 +61,10 @@ def read_radar(
         today=today or date.today(),
     )
     return RadarOut(
+        language=lang,
         student_name=radar.student_name,
         generated_on=radar.generated_on,
         total_watched=len(radar.entries),
         counts={b.value: n for b, n in radar.counts().items() if n},
-        entries=[_entry_out(e) for e in radar.entries],
+        entries=[_entry_out(e, lang) for e in radar.entries],
     )

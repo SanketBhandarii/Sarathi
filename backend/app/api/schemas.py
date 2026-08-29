@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from app.eligibility.layers import Layer
 from app.eligibility.verdict import Bucket
+from app.language.phrases import Language
 from app.student.profile import Category, Gender
 
 
@@ -62,6 +63,7 @@ class RadarEntryOut(BaseModel):
 
 
 class RadarOut(BaseModel):
+    language: Language = Language.ENGLISH
     student_name: str
     generated_on: date
     total_watched: int
