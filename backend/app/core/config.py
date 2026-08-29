@@ -23,6 +23,10 @@ class Settings(BaseSettings):
 
     database_url: str = ""
 
+    imagekit_private_key: str = ""
+    imagekit_public_key: str = ""
+    imagekit_url_endpoint: str = ""
+
     notification_cache_dir: Path = BACKEND_ROOT / ".." / "data" / "notifications"
     exam_data_dir: Path = BACKEND_ROOT / ".." / "data" / "exams"
 
