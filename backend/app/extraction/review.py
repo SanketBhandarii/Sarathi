@@ -141,3 +141,36 @@ def check_values(rules: ExamRules) -> list[ValueCheck]:
 
 def unsupported_values(checks: list[ValueCheck]) -> list[ValueCheck]:
     return [c for c in checks if not c.supported]
+
+
+def prune_unsupported(rules: ExamRules, verdict_fields: set[str]) -> ExamRules:
+    pruned = rules.model_copy(deep=True)
+    dropped: list[str] = []
+
+    if pruned.age and "age.maximum_years" in verdict_fields:
+        pruned.age.maximum_years = None
+        dropped.append("age.maximum_years")
+    if pruned.age and "age.minimum_years" in verdict_fields:
+        pruned.age.minimum_years = None
+        dropped.append("age.minimum_years")
+
+    kept_relaxations = []
+    for item in pruned.age_relaxations:
+        label = f"relaxation[{item.category[:24]}]"
+        if label in verdict_fields:
+            dropped.append(f"age relaxation for {item.category[:40]}")
+        else:
+            kept_relaxations.append(item)
+    pruned.age_relaxations = kept_relaxations
+
+    kept_fees = []
+    for item in pruned.fees:
+        label = f"fee[{item.applies_to[:20]}]"
+        if label in verdict_fields:
+            dropped.append(f"application fee for {item.applies_to[:40]}")
+        else:
+            kept_fees.append(item)
+    pruned.fees = kept_fees
+
+    pruned.could_not_verify = dropped
+    return pruned

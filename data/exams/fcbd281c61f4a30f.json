@@ -1,0 +1,86 @@
+{
+  "exam_name": "Advertisement No.52 - 2026 (Special)",
+  "source_id": "upsc",
+  "document_sha256": "fcbd281c61f4a30fc9c5bc219d9bfb2c656076f32ca0351fdc1a96c0cce11486",
+  "age": {
+    "minimum_years": null,
+    "maximum_years": null,
+    "reckoned_on": null,
+    "citation": {
+      "page": 7,
+      "quote": "The age limit shown against all items is the normal age limit for EWS/URs candidates and is relaxed age limit for SC/ST/OBC/PwBD candidates i.e. upto five years for SC/ST candidates, upto three years for OBC candidates and upto ten years for PwBD candidates."
+    }
+  },
+  "age_relaxations": [
+    {
+      "category": "Central/U.T. Government employees",
+      "extra_years": 5,
+      "citation": {
+        "page": 13,
+        "quote": "The upper age limit is relaxable for Central/U.T. Govt. Servants up to 5 years as per instructions issued by th e Govt. of India from time to time."
+      }
+    },
+    {
+      "category": "Employees of the Employees’ Provident Fund Organisation",
+      "extra_years": 5,
+      "citation": {
+        "page": 14,
+        "quote": "The upper Age limit is also relaxable for Employees of the Employees’ Provident Fund Organisation upto 5 years."
+      }
+    },
+    {
+      "category": "PwBD (disability)",
+      "extra_years": 10,
+      "citation": {
+        "page": 14,
+        "quote": "i) Age relaxation of 10 years (This implies that Scheduled Castes/Scheduled Tribes category candidates would get maximum 15 years age relaxation including 5 years meant for their respective categories. Similarly OBC candidates would get maximum upto 13 years including 3 years age relaxation meant for OBC category) in upper age limit shall be allowed to persons suffering from (a) blindness and low vision, (b) deaf and hard of hearing (c) Locomotor Disability including Cerebral Palsy, Leprosy Cured, Dwarfism, Acid Attack Victims, Muscular Dystrophy, Spinal Deformity and Spinal Injury without any associated neurological/limb dysfunction, (d) Autism, intellectual disability, specific learning disability and mental illness, (e) Multiple disabilities from amongst persons under clauses (a) to (d) including deaf-blindness in the posts identified for each disability in case of direct recruitment to all civil posts/services under the Central Government identified suitable to be held by persons with such disabilities, subject to the condition that maximum age of the applicant on the closing date shall not exceed 56 years."
+      }
+    }
+  ],
+  "qualifications": [
+    {
+      "requirement": "Degree of a recognised University or Equivalent",
+      "minimum_percentage": null,
+      "citation": {
+        "page": 3,
+        "quote": "ESSENTIAL QUALIFICATIONS: EDUCATIONAL Degree of a recognised University or Equivalent."
+      }
+    },
+    {
+      "requirement": "Diploma in Company Law/Labour Laws/Public Administration",
+      "minimum_percentage": null,
+      "citation": {
+        "page": 3,
+        "quote": "DESIRABLE QUALIFICATIONS: Diploma in Company Law/Labour Laws/Public Administration."
+      }
+    }
+  ],
+  "fees": [
+    {
+      "amount_rupees": 25.0,
+      "applies_to": "Candidates (Except Female/SC/ST/Persons with Benchmark Disability Candidates who are exempted from payment of fee)",
+      "citation": {
+        "page": 12,
+        "quote": "Candidates (Except Female/SC/ST/Persons with Benchmark Disability Candidates who are exempted from payment of fee) are required to pay a fee of Rs. 25/- (Rupees Twenty five) by using Visa/Master/Rupay Credit/Debit Card/UPI Payment or by using internet banking facility of any Bank."
+      }
+    }
+  ],
+  "key_dates": [
+    {
+      "label": "Last date for submission of applications",
+      "happens_on": "2026-09-11",
+      "citation": {
+        "page": 12,
+        "quote": "The closing date for submission of online recruitment application through website is 1800 Hrs on 11-09-2026."
+      }
+    }
+  ],
+  "could_not_verify": [
+    "age relaxation for SC/ST",
+    "age relaxation for OBC",
+    "age relaxation for PwBD",
+    "age relaxation for Ex-Servicemen and Commissioned Officers ",
+    "application fee for SC/ST/PwBD/Women candidates of any commu",
+    "application fee for OBC/EWS/Unreserved male candidates"
+  ]
+}

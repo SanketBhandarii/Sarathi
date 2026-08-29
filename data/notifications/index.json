@@ -59,6 +59,18 @@
       "relative_path": "ibps/9379acfcad575058.pdf",
       "kind": "recruitment_notification",
       "kind_reason": "It announces a recruitment process with vacancies and eligibility criteria."
+    },
+    {
+      "source_id": "upsc",
+      "title": "Advertisement No.52 - 2026 (Special)",
+      "origin_url": "https://www.upsc.gov.in/sites/default/files/AdvtNo-52-2026-Special-Engl-210826.pdf",
+      "sha256": "fcbd281c61f4a30fc9c5bc219d9bfb2c656076f32ca0351fdc1a96c0cce11486",
+      "byte_size": 1562201,
+      "page_count": 29,
+      "fetched_at": "2026-08-29T16:55:42.072498Z",
+      "relative_path": "upsc/fcbd281c61f4a30f.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "It announces job vacancies and invites applications."
     }
   ]
 }

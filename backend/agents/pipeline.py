@@ -6,6 +6,7 @@ from agents import extractor
 from agents.prompts import CORRECTION_HINT
 from agents.verifier import Verdict, verify
 from app.extraction.document import Page
+from app.extraction.review import prune_unsupported
 from app.extraction.schema import ExamRules
 
 
@@ -48,5 +49,10 @@ def extract_and_verify(
         )
         verdict = verify(rules, pages, use_model=use_model_review)
         history.append(f"attempt {attempt}: {verdict.summary()}")
+
+    if not verdict.is_clean:
+        rules = prune_unsupported(rules, {p.field for p in verdict.problems})
+        verdict = verify(rules, pages, use_model=False)
+        history.append(f"pruned unverifiable claims: {verdict.summary()}")
 
     return PipelineResult(rules=rules, verdict=verdict, attempts=attempt, history=history)

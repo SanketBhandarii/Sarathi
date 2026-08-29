@@ -10,6 +10,7 @@ official_domains = ("upsc.gov.in", "upsconline.nic.in")
 
 PAGES = [
     "https://www.upsc.gov.in",
+    "https://www.upsc.gov.in/whats-new",
     "https://www.upsc.gov.in/recruitment/recruitment-advertisement",
     "https://www.upsc.gov.in/examinations/active-examinations",
 ]

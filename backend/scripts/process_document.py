@@ -29,6 +29,11 @@ def main(match: str) -> int:
     print()
     print("attempts:", result.attempts)
     print("trustworthy:", result.trustworthy)
+    if result.rules.could_not_verify:
+        print("could not verify, so not shown to the student:")
+        for field in result.rules.could_not_verify:
+            print(f"   - {field}")
+        print()
     if result.verdict.problems:
         for p in result.verdict.problems:
             print(f"   [{p.severity}] {p.field}: {p.problem}")

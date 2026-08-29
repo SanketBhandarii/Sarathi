@@ -67,6 +67,7 @@ class ExamRules(BaseModel):
     qualifications: list[Qualification] = []
     fees: list[ApplicationFee] = []
     key_dates: list[KeyDate] = []
+    could_not_verify: list[str] = []
 
     def all_citations(self) -> list[Citation]:
         cited = [self.age.citation] if self.age else []
