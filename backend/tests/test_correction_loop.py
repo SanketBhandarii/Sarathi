@@ -71,7 +71,7 @@ def test_loop_retries_and_recovers_from_a_bad_first_reading(monkeypatch, fixture
     assert result.rules.age.maximum_years == 30
 
 
-def test_loop_gives_up_after_max_attempts(monkeypatch, fixture_data):
+def test_unfixable_claim_is_dropped_not_shown(monkeypatch, fixture_data):
     rules, pages, doc = fixture_data
     broken = rules.model_copy(deep=True)
     broken.age.maximum_years = 45
@@ -86,5 +86,8 @@ def test_loop_gives_up_after_max_attempts(monkeypatch, fixture_data):
     )
 
     assert result.attempts == 3
-    assert not result.trustworthy
-    assert len(result.history) == 3
+    assert len(result.history) == 4
+
+    assert result.rules.age.maximum_years is None
+    assert "age.maximum_years" in result.rules.could_not_verify
+    assert result.trustworthy
