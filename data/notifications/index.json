@@ -1,0 +1,54 @@
+{
+  "documents": [
+    {
+      "source_id": "upsc",
+      "title": "Common mistakes done while filling OMR Sheet/Scannable Attendance List",
+      "origin_url": "https://www.upsc.gov.in/sites/default/files/Common_Mistake_OMR_SAL.pdf",
+      "sha256": "a75858dc38f48ef998c6229582fc590c675098c59a910bc190f3f66bbd7b206c",
+      "byte_size": 9481903,
+      "page_count": 10,
+      "fetched_at": "2026-08-29T15:06:57.719082Z",
+      "relative_path": "upsc/a75858dc38f48ef9.pdf"
+    },
+    {
+      "source_id": "upsc",
+      "title": "Important instructions : Civil Services (Main) Examination, 2026",
+      "origin_url": "https://www.upsc.gov.in/sites/default/files/CSME_2026_Ticker_Eng_17082026.pdf",
+      "sha256": "47a4e7c77a451733dd23e543aa6942db316fac794844b75e4ed17ec78e93add5",
+      "byte_size": 209438,
+      "page_count": 1,
+      "fetched_at": "2026-08-29T15:06:58.066795Z",
+      "relative_path": "upsc/47a4e7c77a451733.pdf"
+    },
+    {
+      "source_id": "upsc",
+      "title": "Notice regarding change in recruitment process for six (06) posts advertised vide Advt. No. 13-2025",
+      "origin_url": "https://www.upsc.gov.in/sites/default/files/NoticeCancellation-06-Posts-Advt-13-25-Engl-200826.pdf",
+      "sha256": "3f118317887e63edf46df1b2b4f7dbfab05b1dcc78fb4c76e8526d5aa4c13ec4",
+      "byte_size": 51173,
+      "page_count": 1,
+      "fetched_at": "2026-08-29T15:06:58.393638Z",
+      "relative_path": "upsc/3f118317887e63ed.pdf"
+    },
+    {
+      "source_id": "ibps",
+      "title": "Request for Proposal (RFP) For Development of Online Applications Portal for Candidates Registration with Grievance Redressal System and Hosting of IBPS Website",
+      "origin_url": "https://www.ibps.in/wp-content/uploads/FInal-RFP-for-Online-Application.pdf",
+      "sha256": "0be069ca35729c7b123ff989a7ca3067d40342c302361ae6afc2ef42543f8128",
+      "byte_size": 825728,
+      "page_count": 111,
+      "fetched_at": "2026-08-29T15:07:00.360489Z",
+      "relative_path": "ibps/0be069ca35729c7b.pdf"
+    },
+    {
+      "source_id": "ibps",
+      "title": "CRP-PO/MTs-XVI",
+      "origin_url": "https://www.ibps.in/wp-content/uploads/Detailed-Notification_CRP-PO-XVI_Final_V1_30.06.2026.pdf",
+      "sha256": "9379acfcad5750585ead182b5b0660fde89b324a8a2fa79dce9a9a9e69f73ebe",
+      "byte_size": 985571,
+      "page_count": 54,
+      "fetched_at": "2026-08-29T15:07:01.341968Z",
+      "relative_path": "ibps/9379acfcad575058.pdf"
+    }
+  ]
+}
