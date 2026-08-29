@@ -33,11 +33,11 @@ def _extract(schema: type, snippets: list[Snippet], instruction: str):
     return with_retry(lambda: _agent().structured_output(schema, prompt))
 
 
-def extract_age(pages: list[Page]) -> AgeSection:
+def extract_age(pages: list[Page], extra_instruction: str = "") -> AgeSection:
     return _extract(
         AgeSection,
         document.snippets_for(pages, document.AGE_PATTERNS),
-        "Record the age limits and every age relaxation category shown.",
+        "Record the age limits and every age relaxation category shown." + (f"\n\n{extra_instruction}" if extra_instruction else ""),
     )
 
 

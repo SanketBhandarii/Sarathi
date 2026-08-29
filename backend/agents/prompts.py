@@ -23,3 +23,9 @@ For each claim, check:
 4. Was anything important on these pages missed?
 
 Report every problem you find. If a claim is sound, say so plainly. Do not invent problems that are not there, and do not accept a claim just because it looks reasonable - check it against the page."""
+
+CORRECTION_HINT = """Your previous reading of this document had these problems:
+
+{problems}
+
+Read the pages again and record the values correctly. Take the number straight from the sentence you quote - if the sentence says 30, the value is 30."""

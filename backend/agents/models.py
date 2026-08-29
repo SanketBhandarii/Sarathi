@@ -7,7 +7,7 @@ from strands.models.litellm import LiteLLMModel
 
 from app.core.config import get_settings
 
-DEFAULT_MAX_TOKENS = 16000
+DEFAULT_MAX_TOKENS = 3500
 
 
 def _groq(model_id: str, temperature: float, max_tokens: int) -> Model:
