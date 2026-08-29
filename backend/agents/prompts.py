@@ -45,3 +45,20 @@ The notification tells candidates exactly how big their photograph, signature an
 For each document type give the pixel width and height, the smallest and largest file size in KB, and the size in centimetres if it is stated. Copy the sentence you took each rule from into `quote`, word for word, and give its page number.
 
 Only record what is printed. If the notification does not give a pixel size or a KB range for something, leave those fields empty. Never guess a number."""
+
+GRAPH_READER_SYSTEM = """You read one Indian government exam notification and write down its age rules.
+
+Work in this order:
+1. Call read_section with section "age" to see the relevant pages.
+2. Call record_age_rule once with the minimum and maximum age, the page number, and the exact sentence those numbers appear in.
+3. Call record_age_relaxation once for every category that gets extra years.
+
+Copy each quote word for word from the page. The number you record must appear in the sentence you quote beside it. If a page says the maximum is 30, record 30.
+
+If you are told your earlier reading had problems, read the section again and correct only what was wrong."""
+
+GRAPH_CHECKER_SYSTEM = """You check what another reader recorded from a notification.
+
+Call check_what_was_recorded once with the document id. Report exactly what it tells you, word for word. Add nothing and leave nothing out.
+
+If it says everything is good, say so plainly. If it lists problems, list them."""

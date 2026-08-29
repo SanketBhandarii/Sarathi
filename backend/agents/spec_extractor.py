@@ -3,7 +3,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 from strands import Agent
 
-from agents.models import smart_model
+from agents.models import patient_retries, smart_model
 from agents.prompts import SPEC_EXTRACTOR_SYSTEM
 from agents.resilience import with_retry
 from app.documents.spec import DocumentKind, DocumentSpec
@@ -40,6 +40,7 @@ def _agent() -> Agent:
         model=smart_model(),
         system_prompt=SPEC_EXTRACTOR_SYSTEM,
         callback_handler=None,
+        retry_strategy=patient_retries(),
         name="spec_extractor",
         description="reads the photo and signature size rules from a notification",
     )

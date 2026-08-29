@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from strands import Agent
 
-from agents.models import smart_model
+from agents.models import patient_retries, smart_model
 from agents.prompts import EXTRACTOR_SYSTEM
 from agents.resilience import with_retry
 from app.extraction import document
@@ -21,6 +21,7 @@ def _agent() -> Agent:
         model=smart_model(),
         system_prompt=EXTRACTOR_SYSTEM,
         callback_handler=None,
+        retry_strategy=patient_retries(),
         name="extractor",
         description="reads one section of a notification and records it with citations",
     )

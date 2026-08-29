@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from strands import Agent
 
-from agents.models import smart_model
+from agents.models import patient_retries, smart_model
 from agents.prompts import VERIFIER_SYSTEM
 from agents.resilience import with_retry
 from app.extraction.document import Page
@@ -46,6 +46,7 @@ def build_verifier() -> Agent:
         system_prompt=VERIFIER_SYSTEM,
         tools=[quote_appears_on_page, read_page, find_text_in_document],
         callback_handler=None,
+        retry_strategy=patient_retries(),
         name="verifier",
         description="re-reads the notification and tries to prove the extractor wrong",
     )

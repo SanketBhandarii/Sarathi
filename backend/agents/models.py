@@ -2,12 +2,14 @@ from __future__ import annotations
 
 from functools import lru_cache
 
+from strands import ModelRetryStrategy
 from strands.models import BedrockModel, Model
 from strands.models.litellm import LiteLLMModel
 
 from app.core.config import get_settings
 
 DEFAULT_MAX_TOKENS = 3500
+TOOL_CALLING_MAX_TOKENS = 1100
 
 
 def _groq(model_id: str, temperature: float, max_tokens: int) -> Model:
@@ -45,3 +47,16 @@ def smart_model(temperature: float = 0.0, max_tokens: int = DEFAULT_MAX_TOKENS) 
     if settings.model_provider == "bedrock":
         return _bedrock(settings.bedrock_smart_model, temperature, max_tokens)
     return _groq(settings.groq_smart_model, temperature, max_tokens)
+
+
+@lru_cache
+def patient_retries() -> ModelRetryStrategy:
+    return ModelRetryStrategy(max_attempts=6, initial_delay=8, max_delay=120)
+
+
+@lru_cache
+def tool_calling_model() -> Model:
+    settings = get_settings()
+    if settings.model_provider == "bedrock":
+        return _bedrock(settings.bedrock_smart_model, 0.0, TOOL_CALLING_MAX_TOKENS)
+    return _groq(settings.groq_smart_model, 0.0, TOOL_CALLING_MAX_TOKENS)
