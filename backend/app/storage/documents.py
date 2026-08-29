@@ -15,6 +15,8 @@ class CachedDocument(BaseModel):
     page_count: int | None
     fetched_at: datetime
     relative_path: str
+    kind: str | None = None
+    kind_reason: str | None = None
 
     def path_under(self, root: Path) -> Path:
         return root / self.relative_path

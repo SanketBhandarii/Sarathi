@@ -8,7 +8,9 @@
       "byte_size": 9481903,
       "page_count": 10,
       "fetched_at": "2026-08-29T15:06:57.719082Z",
-      "relative_path": "upsc/a75858dc38f48ef9.pdf"
+      "relative_path": "upsc/a75858dc38f48ef9.pdf",
+      "kind": "other",
+      "kind_reason": "It is a guidance note on filling OMR sheets, not a recruitment notification."
     },
     {
       "source_id": "upsc",
@@ -18,7 +20,9 @@
       "byte_size": 209438,
       "page_count": 1,
       "fetched_at": "2026-08-29T15:06:58.066795Z",
-      "relative_path": "upsc/47a4e7c77a451733.pdf"
+      "relative_path": "upsc/47a4e7c77a451733.pdf",
+      "kind": "other",
+      "kind_reason": "It contains instructions for exam candidates, not a job invitation."
     },
     {
       "source_id": "upsc",
@@ -28,7 +32,9 @@
       "byte_size": 51173,
       "page_count": 1,
       "fetched_at": "2026-08-29T15:06:58.393638Z",
-      "relative_path": "upsc/3f118317887e63ed.pdf"
+      "relative_path": "upsc/3f118317887e63ed.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "It announces a recruitment process for six posts."
     },
     {
       "source_id": "ibps",
@@ -38,7 +44,9 @@
       "byte_size": 825728,
       "page_count": 111,
       "fetched_at": "2026-08-29T15:07:00.360489Z",
-      "relative_path": "ibps/0be069ca35729c7b.pdf"
+      "relative_path": "ibps/0be069ca35729c7b.pdf",
+      "kind": "other",
+      "kind_reason": "It is a tender for software development, not a job opening."
     },
     {
       "source_id": "ibps",
@@ -48,7 +56,9 @@
       "byte_size": 985571,
       "page_count": 54,
       "fetched_at": "2026-08-29T15:07:01.341968Z",
-      "relative_path": "ibps/9379acfcad575058.pdf"
+      "relative_path": "ibps/9379acfcad575058.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "It announces a recruitment process with vacancies and eligibility criteria."
     }
   ]
 }

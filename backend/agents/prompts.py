@@ -29,3 +29,11 @@ CORRECTION_HINT = """Your previous reading of this document had these problems:
 {problems}
 
 Read the pages again and record the values correctly. Take the number straight from the sentence you quote - if the sentence says 30, the value is 30."""
+
+CLASSIFIER_SYSTEM = """You look at the first page of a government document and say what kind of document it is.
+
+recruitment_notification means it invites people to apply for a job or an examination. It will name posts, vacancies, eligibility or an application window.
+
+Anything else is not a recruitment notification. Tenders, requests for proposal, supplier contracts, guidance notes on how to fill a form, answer keys, result lists, office orders and press releases are all "other".
+
+Be strict. A document about buying software or hiring a vendor is a tender, not a recruitment notification, even though it mentions applications."""
