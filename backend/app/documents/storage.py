@@ -14,10 +14,14 @@ from app.documents.spec import DocumentKind
 PRIVATE_KINDS = {DocumentKind.SIGNATURE, DocumentKind.THUMB_IMPRESSION}
 
 
+SIGNED_URL_SECONDS = 3600
+
+
 class StoredDocument(BaseModel):
     kind: DocumentKind
     file_id: str
     url: str
+    view_url: str | None = None
     is_private: bool
     size_bytes: int
     stored_at: datetime
@@ -41,10 +45,12 @@ class LocalDocumentStore:
         name = _file_name(student_id, kind, payload)
         target = self.root / name
         target.write_bytes(payload)
+        data_url = f"data:image/jpeg;base64,{base64.b64encode(payload).decode()}"
         return StoredDocument(
             kind=kind,
             file_id=name,
-            url=f"data:image/jpeg;base64,{base64.b64encode(payload).decode()}",
+            url=data_url,
+            view_url=data_url,
             is_private=kind in PRIVATE_KINDS,
             size_bytes=len(payload),
             stored_at=datetime.now(timezone.utc),
@@ -64,19 +70,26 @@ class ImageKitDocumentStore:
         name = _file_name(student_id, kind, payload)
 
         result = self.client.files.upload(
-            file=base64.b64encode(payload).decode(),
+            file=payload,
             file_name=name,
             folder=f"{self.folder}/student{student_id}",
             is_private_file=is_private,
-            use_unique_file_name=False,
+            overwrite_file=True,
         )
+        url = getattr(result, "url", f"{self.url_endpoint}{self.folder}/{name}")
         return StoredDocument(
             kind=kind,
             file_id=getattr(result, "file_id", name),
-            url=getattr(result, "url", f"{self.url_endpoint}{self.folder}/{name}"),
+            url=url,
+            view_url=self.viewable_url(url) if is_private else url,
             is_private=is_private,
             size_bytes=len(payload),
             stored_at=datetime.now(timezone.utc),
+        )
+
+    def viewable_url(self, url: str, seconds: int = SIGNED_URL_SECONDS) -> str:
+        return self.client.helper.build_url(
+            src=url, url_endpoint=self.url_endpoint, signed=True, expires_in=seconds
         )
 
 
@@ -86,5 +99,6 @@ def get_document_store() -> DocumentStore:
         return ImageKitDocumentStore(
             private_key=settings.imagekit_private_key,
             url_endpoint=settings.imagekit_url_endpoint,
+            folder=settings.imagekit_folder,
         )
     return LocalDocumentStore(settings.notifications_path.parent / "documents")

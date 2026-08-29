@@ -13,6 +13,7 @@ from app.eligibility.age_cliff import AgeCliff, find_age_cliff
 from app.eligibility.clashes import Clash, find_clashes
 from app.eligibility.deadlines import UpcomingDeadline, upcoming_deadlines
 from app.eligibility.radar import build_radar
+from app.eligibility.savings import SavingsSummary, find_savings
 from app.student.certificates import Certificate, CertificateWarning, check_certificates
 from app.student.form_pack import FormPack, build_form_pack
 
@@ -78,3 +79,12 @@ def read_form_pack(
 ) -> FormPack:
     profile = students_repo.to_profile(student)
     return build_form_pack(profile, exam_name, today or date.today())
+
+
+@router.get("/{student_id}/savings", response_model=SavingsSummary)
+def read_savings(
+    student: Student = Depends(get_student_or_404),
+    db: Session = Depends(get_db),
+) -> SavingsSummary:
+    profile = students_repo.to_profile(student)
+    return find_savings(profile, docs_repo.all_rules(db))
