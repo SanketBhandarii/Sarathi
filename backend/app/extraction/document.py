@@ -23,6 +23,16 @@ AGE_PATTERNS = (r"\bage\b", r"relaxation", r"born not earlier", r"upper age")
 QUALIFICATION_PATTERNS = (r"qualification", r"educational", r"degree", r"graduat")
 FEE_PATTERNS = (r"application fee", r"intimation charge", r"\bfees\b")
 DATE_PATTERNS = (r"important dates", r"schedule of events", r"last date", r"commencement of")
+PHOTO_PATTERNS = (r"photograph image", r"photograph must be", r"passport style", r"photo capture")
+SIGNATURE_PATTERNS = (r"signature\s*:", r"sign on white paper", r"not in capital letters")
+THUMB_PATTERNS = (r"thumb impression", r"left thumb")
+DOCUMENT_SPEC_PATTERNS = (
+    r"photograph",
+    r"signature",
+    r"thumb impression",
+    r"dimensions?\s*[:\-]?\s*\d+\s*[x×]",
+    r"\d+\s*kb",
+)
 
 
 MIN_CHARS_PER_PAGE = 350
@@ -77,7 +87,15 @@ def snippets_for(
     return sorted((s for _, s in ranked), key=lambda s: s.page)
 
 
-def render(snippets: list[Snippet]) -> str:
-    return "\n\n".join(
-        f'<page number="{s.page}">\n{s.text}\n</page>' for s in snippets
-    )
+def render(snippets: list[Snippet], char_budget: int = 5200) -> str:
+    blocks: list[str] = []
+    used = 0
+    for snippet in snippets:
+        remaining = char_budget - used
+        if remaining <= 200:
+            break
+        text = snippet.text[:remaining]
+        opening = '<page number="' + str(snippet.page) + '">'
+        blocks.append(opening + chr(10) + text + chr(10) + '</page>')
+        used += len(text)
+    return (chr(10) * 2).join(blocks)

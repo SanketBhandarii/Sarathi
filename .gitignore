@@ -27,3 +27,6 @@ Thumbs.db
 # planning documents - kept locally, never published
 Sarathi-Project-Blueprint.pdf
 allaboutthishackathon.txt
+
+# generated document outputs
+data/documents/

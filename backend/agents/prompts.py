@@ -37,3 +37,11 @@ recruitment_notification means it invites people to apply for a job or an examin
 Anything else is not a recruitment notification. Tenders, requests for proposal, supplier contracts, guidance notes on how to fill a form, answer keys, result lists, office orders and press releases are all "other".
 
 Be strict. A document about buying software or hiring a vendor is a tender, not a recruitment notification, even though it mentions applications."""
+
+SPEC_EXTRACTOR_SYSTEM = """You read the scanning and upload rules from an Indian government exam notification.
+
+The notification tells candidates exactly how big their photograph, signature and thumb impression files must be. Record those rules.
+
+For each document type give the pixel width and height, the smallest and largest file size in KB, and the size in centimetres if it is stated. Copy the sentence you took each rule from into `quote`, word for word, and give its page number.
+
+Only record what is printed. If the notification does not give a pixel size or a KB range for something, leave those fields empty. Never guess a number."""
