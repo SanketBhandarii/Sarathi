@@ -14,6 +14,7 @@ class Bucket(StrEnum):
     COMING_SOON = "coming_soon"
     NOT_YET = "not_yet"
     NOT_FOR_YOU = "not_for_you"
+    CLOSED_FOR_NOW = "closed_for_now"
     UNKNOWN = "unknown"
 
 
@@ -22,6 +23,7 @@ BUCKET_LABEL: dict[Bucket, str] = {
     Bucket.COMING_SOON: "You can apply, form not open yet",
     Bucket.NOT_YET: "Not yet",
     Bucket.NOT_FOR_YOU: "Not for you",
+    Bucket.CLOSED_FOR_NOW: "Closed for now, it runs again",
     Bucket.UNKNOWN: "We could not check this one",
 }
 

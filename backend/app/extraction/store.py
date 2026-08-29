@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import re
+
 from pathlib import Path
 
 from app.extraction.schema import ExamRules
+
+HASH_NAME = re.compile(r"[0-9a-f]{16}")
 
 
 class ExamRulesStore:
@@ -28,4 +32,5 @@ class ExamRulesStore:
         return [
             ExamRules.model_validate_json(p.read_text("utf-8"))
             for p in sorted(self.root.glob("*.json"))
+            if HASH_NAME.fullmatch(p.stem)
         ]
