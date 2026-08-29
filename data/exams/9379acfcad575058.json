@@ -1,0 +1,94 @@
+{
+  "exam_name": "CRP-PO/MTs-XVI",
+  "source_id": "ibps",
+  "document_sha256": "9379acfcad5750585ead182b5b0660fde89b324a8a2fa79dce9a9a9e69f73ebe",
+  "age": {
+    "minimum_years": 20,
+    "maximum_years": 30,
+    "reckoned_on": "2026-07-01",
+    "citation": {
+      "page": 6,
+      "quote": "II. AGE (AS ON 01.07.2026) Minimum: 20 years Maximum: 30 years i.e. A candidate must have been born not earlier than 02 .07.1996 and not later than 01 .07.2006 (both dates inclusive)"
+    }
+  },
+  "age_relaxations": [
+    {
+      "category": "Scheduled Caste/Scheduled Tribe",
+      "extra_years": 5,
+      "citation": {
+        "page": 6,
+        "quote": "1 Scheduled Caste/Scheduled Tribe 5 years"
+      }
+    },
+    {
+      "category": "Other Backward Classes (Non-Creamy Layer)",
+      "extra_years": 3,
+      "citation": {
+        "page": 6,
+        "quote": "2 Other Backward Classes (Non-Creamy Layer) 3 years"
+      }
+    },
+    {
+      "category": "Persons With Benchmark Disabilities as defined under “The Rights of Persons with Disabilities Act, 2016”",
+      "extra_years": 10,
+      "citation": {
+        "page": 6,
+        "quote": "3 Persons With Benchmark Disabilities as defined under “The Rights of Persons with Disabilities Act, 2016” 10 years"
+      }
+    },
+    {
+      "category": "Ex-Servicemen, Commissioned Officers including Emergency Commissioned Officers (ECOs)/ Short Service Commissioned Officers (SSCOs) who have rendered at least 5 years military service and have been released on completion of assignment (including those whose assignment is due to be completed within one year from the last date of receipt of application i.e., 20.07.2027) otherwise than by way of dismissal or discharge on account of misconduct or inefficiency or physical disability attributable to military service or invalidation, subject to ceiling as per Government guidelines.",
+      "extra_years": 5,
+      "citation": {
+        "page": 6,
+        "quote": "4 Ex-Servicemen, Commissioned Officers including Emergency Commissioned Officers (ECOs)/ Short Service Commissioned Officers (SSCOs) who have rendered at least 5 years military service and have been released on completion of assignment (including those whose assignment is due to be completed within one year from the last date of receipt of application i.e., 20.07.2027) otherwise than by way of dismissal or discharge on account of misconduct or inefficiency or physical disability attributable to military service or invalidation, subject to ceiling as per Government guidelines. 5 years"
+      }
+    }
+  ],
+  "qualifications": [
+    {
+      "requirement": "A Degree (Graduation) in any discipline from a University recognised by the Govt. Of India or any equivalent qualification recognized as such by the Central Government.",
+      "minimum_percentage": null,
+      "citation": {
+        "page": 13,
+        "quote": "A Degree (Graduation) in any discipline from a University recognised by the Govt. Of India or any equivalent qualification recognized as such by the Central Government."
+      }
+    }
+  ],
+  "fees": [
+    {
+      "amount_rupees": 175.0,
+      "applies_to": "SC/ST/PwBD candidates",
+      "citation": {
+        "page": 15,
+        "quote": "- Rs. 175/- (inclusive of GST) for SC/ST/PwBD candidates."
+      }
+    },
+    {
+      "amount_rupees": 850.0,
+      "applies_to": "all others",
+      "citation": {
+        "page": 15,
+        "quote": "- Rs. 850 /- (inclusive of GST) for all others."
+      }
+    }
+  ],
+  "key_dates": [
+    {
+      "label": "Online Registration including Edit/Modification of Application by candidates",
+      "happens_on": "2026-07-01",
+      "citation": {
+        "page": 1,
+        "quote": "Online Registration including Edit/Modification of Application by candidates 01-07-2026 to 21-07-2026"
+      }
+    },
+    {
+      "label": "Payment of Application Fees/Intimation Charges (Online)",
+      "happens_on": "2026-07-01",
+      "citation": {
+        "page": 1,
+        "quote": "Payment of Application Fees/Intimation Charges (Online) 01-07-2026 to 21-07-2026"
+      }
+    }
+  ]
+}
