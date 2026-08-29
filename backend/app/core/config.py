@@ -28,6 +28,10 @@ class Settings(BaseSettings):
     imagekit_url_endpoint: str = ""
     imagekit_folder: str = "/Sarathi"
 
+    twilio_account_sid: str = ""
+    twilio_auth_token: str = ""
+    twilio_whatsapp_from: str = ""
+
     notification_cache_dir: Path = BACKEND_ROOT / ".." / "data" / "notifications"
     exam_data_dir: Path = BACKEND_ROOT / ".." / "data" / "exams"
 

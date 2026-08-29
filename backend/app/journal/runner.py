@@ -9,6 +9,8 @@ from app.core.config import get_settings
 from app.db.models import JournalEvent, JournalRun
 from app.db.repositories import documents as docs_repo
 from app.db.repositories import students as students_repo
+from app.delivery.messenger import Messenger, OutgoingMessage, get_messenger
+from app.language.phrases import Language
 from app.eligibility.radar import build_radar
 from app.eligibility.verdict import Bucket
 from app.extraction.document import load_pages
@@ -83,7 +85,14 @@ def _look_for_news(session: Session, student_id: int, tally: RunTally, today: da
             )
 
 
-def run_nightly_check(session: Session, student_id: int, today: date | None = None) -> JournalRun:
+def run_nightly_check(
+    session: Session,
+    student_id: int,
+    today: date | None = None,
+    messenger: Messenger | None = None,
+    send_to: str | None = None,
+    language: Language = Language.ENGLISH,
+) -> JournalRun:
     today = today or date.today()
     started = time.perf_counter()
     tally = RunTally()
@@ -95,6 +104,10 @@ def run_nightly_check(session: Session, student_id: int, today: date | None = No
     messages = tally.messages_to_send
     if not messages:
         tally.add(Event(EventKind.NOTHING_TO_SAY, "nothing needed your attention"))
+    elif send_to:
+        post = messenger or get_messenger()
+        for message in messages:
+            post.send(OutgoingMessage(to=send_to, body=message.detail, language=language))
 
     run = JournalRun(
         student_id=student_id,
