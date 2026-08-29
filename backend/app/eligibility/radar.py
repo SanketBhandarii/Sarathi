@@ -6,6 +6,7 @@ from datetime import date
 from pydantic import BaseModel
 
 from app.eligibility.engine import decide
+from app.eligibility.layers import Layer, layer_for
 from app.eligibility.verdict import BUCKET_LABEL, Bucket, ExamVerdict, Reason
 from app.extraction.schema import ExamRules
 from app.sources.ssc_calendar import CalendarEntry
@@ -18,6 +19,7 @@ class RadarEntry(BaseModel):
     bucket: Bucket
     reasons: list[Reason] = []
     rules_known: bool
+    layer: Layer = Layer.CENTRAL
     closing_text: str | None = None
     closing_on: date | None = None
     closing_is_month_only: bool = False
@@ -40,8 +42,11 @@ class Radar(BaseModel):
     def counts(self) -> dict[Bucket, int]:
         return {b: len(self.bucket(b)) for b in Bucket}
 
+    def layer(self, layer: Layer) -> list[RadarEntry]:
+        return [e for e in self.entries if e.layer is layer]
 
-def _from_verdict(verdict: ExamVerdict, rules: ExamRules) -> RadarEntry:
+
+def _from_verdict(verdict: ExamVerdict, rules: ExamRules, student: StudentProfile) -> RadarEntry:
     closing = [d for d in rules.key_dates if "last" in d.label.lower() or "clos" in d.label.lower()]
     closes_on = min((d.happens_on for d in closing), default=None)
     return RadarEntry(
@@ -50,6 +55,7 @@ def _from_verdict(verdict: ExamVerdict, rules: ExamRules) -> RadarEntry:
         bucket=verdict.bucket,
         reasons=verdict.reasons,
         rules_known=True,
+        layer=layer_for(verdict.source_id, student),
         closing_on=closes_on,
         closing_text=closes_on.strftime("%d %B %Y") if closes_on else None,
         fee_payable=verdict.fee_payable,
@@ -66,7 +72,7 @@ def _latest_possible(entry: CalendarEntry) -> date | None:
     return entry.closes_on.replace(day=last_day)
 
 
-def _from_calendar(entry: CalendarEntry, today: date) -> RadarEntry:
+def _from_calendar(entry: CalendarEntry, today: date, student: StudentProfile) -> RadarEntry:
     shown = entry.closes_text if entry.closes_is_month_only else (
         entry.closes_on.strftime("%d %B %Y") if entry.closes_on else None
     )
@@ -94,6 +100,7 @@ def _from_calendar(entry: CalendarEntry, today: date) -> RadarEntry:
             ),
         ],
         rules_known=False,
+        layer=layer_for(entry.source_id, student),
         closing_on=entry.closes_on,
         closing_text=shown,
         closing_is_month_only=entry.closes_is_month_only,
@@ -107,11 +114,11 @@ def build_radar(
     today: date | None = None,
 ) -> Radar:
     today = today or date.today()
-    entries = [_from_verdict(decide(r, student, today), r) for r in rules_list]
+    entries = [_from_verdict(decide(r, student, today), r, student) for r in rules_list]
 
     known = {e.exam_name.lower() for e in entries}
     entries.extend(
-        _from_calendar(c, today) for c in calendar if c.exam_name.lower() not in known
+        _from_calendar(c, today, student) for c in calendar if c.exam_name.lower() not in known
     )
 
     order = {

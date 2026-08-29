@@ -25,6 +25,17 @@ FEE_PATTERNS = (r"application fee", r"intimation charge", r"\bfees\b")
 DATE_PATTERNS = (r"important dates", r"schedule of events", r"last date", r"commencement of")
 
 
+MIN_CHARS_PER_PAGE = 350
+MIN_TOTAL_CHARS = 800
+
+
+def has_readable_text(pages: list[Page]) -> bool:
+    if not pages:
+        return False
+    total = sum(len(p.text) for p in pages)
+    return total >= MIN_TOTAL_CHARS and total / len(pages) >= MIN_CHARS_PER_PAGE
+
+
 def load_pages(pdf_path: Path) -> list[Page]:
     reader = PdfReader(pdf_path)
     return [

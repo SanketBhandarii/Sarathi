@@ -4,6 +4,7 @@ from datetime import date
 
 from app.eligibility.age import evaluate_age
 from app.eligibility.fees import evaluate_fee
+from app.eligibility.layers import domicile_blocks
 from app.eligibility.qualification import evaluate_qualification
 from app.eligibility.verdict import Bucket, ExamVerdict, Reason
 from app.extraction.schema import ExamRules
@@ -39,6 +40,18 @@ def decide(rules: ExamRules, student: StudentProfile, today: date | None = None)
             source_id=rules.source_id,
             bucket=Bucket.UNKNOWN,
             reasons=[Reason(text="We could not read the rules for this exam clearly.")],
+            unchecked=rules.could_not_verify,
+        )
+
+    domicile_problem = domicile_blocks(rules.source_id, student)
+    if domicile_problem:
+        return ExamVerdict(
+            exam_name=rules.exam_name,
+            source_id=rules.source_id,
+            bucket=Bucket.NOT_FOR_YOU,
+            reasons=[
+                Reason(text=domicile_problem, blocks_application=True, is_permanent=True)
+            ],
             unchecked=rules.could_not_verify,
         )
 

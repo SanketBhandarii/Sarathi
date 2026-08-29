@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from agents import extractor
 from agents.prompts import CORRECTION_HINT
 from agents.verifier import Verdict, verify
-from app.extraction.document import Page
+from app.extraction.document import Page, has_readable_text
 from app.extraction.review import prune_unsupported
 from app.extraction.schema import ExamRules
 
@@ -35,6 +35,21 @@ def extract_and_verify(
     use_model_review: bool = True,
 ) -> PipelineResult:
     history: list[str] = []
+
+    if not has_readable_text(pages):
+        empty = ExamRules(
+            exam_name=exam_name,
+            source_id=source_id,
+            document_sha256=sha256,
+            could_not_verify=["this notification is a scanned image, we cannot read its text"],
+        )
+        return PipelineResult(
+            rules=empty,
+            verdict=verify(empty, pages, use_model=False),
+            attempts=0,
+            history=["skipped: scanned document with no readable text"],
+        )
+
     rules = extractor.extract_rules(pages, exam_name, source_id, sha256)
     verdict = verify(rules, pages, use_model=use_model_review)
     history.append(f"attempt 1: {verdict.summary()}")

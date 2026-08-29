@@ -24,7 +24,7 @@ class AgeRelaxation(BaseModel):
 
 
 class AgeSection(BaseModel):
-    age: AgeRule
+    age: AgeRule | None = None
     relaxations: list[AgeRelaxation] = []
 
 

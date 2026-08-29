@@ -16,7 +16,9 @@ def evaluate_age(
     rules: ExamRules, student: StudentProfile, today: date
 ) -> tuple[list[Reason], int, str | None]:
     if rules.age is None:
-        return [Reason(text="The age rule could not be read from the notification.")], 0, None
+        return [
+            Reason(text="We could not read the age rule from this notification.")
+        ], 0, None
 
     reckoned_on = rules.age.reckoned_on or today
     age = student.age_on(reckoned_on)

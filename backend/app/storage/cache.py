@@ -54,10 +54,23 @@ class NotificationCache:
             response.raise_for_status()
             payload = response.content
 
+        return self.store_bytes(source_id, title, origin_url, payload)
+
+    def store_bytes(
+        self, source_id: str, title: str, origin_url: str, payload: bytes
+    ) -> CachedDocument:
+        existing = self.get(origin_url)
+        if existing:
+            return existing
+
         if not payload.startswith(PDF_MAGIC):
             raise ValueError(f"not a pdf: {origin_url}")
 
         digest = hashlib.sha256(payload).hexdigest()
+        already = self.index.by_hash().get(digest)
+        if already:
+            return already
+
         relative_path = f"{source_id}/{digest[:16]}.pdf"
         destination = self.root / relative_path
         destination.parent.mkdir(parents=True, exist_ok=True)

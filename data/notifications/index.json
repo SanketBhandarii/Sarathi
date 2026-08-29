@@ -71,6 +71,54 @@
       "relative_path": "upsc/fcbd281c61f4a30f.pdf",
       "kind": "recruitment_notification",
       "kind_reason": "It announces job vacancies and invites applications."
+    },
+    {
+      "source_id": "mpsc",
+      "title": "Advt. No. 018/2026 - State Services Main Examination-2026 - Notification",
+      "origin_url": "https://mpsc.gov.in/adv_notification/8#018/2026",
+      "sha256": "9acea37fdfb518614a354e9302dfb583d8cca0418e6b80315a78eecca65b52d5",
+      "byte_size": 10363944,
+      "page_count": 9,
+      "fetched_at": "2026-08-29T17:50:53.555163Z",
+      "relative_path": "mpsc/9acea37fdfb51861.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "It announces a State Services Main Examination for recruitment."
+    },
+    {
+      "source_id": "mpsc",
+      "title": "Advt. No. 004/2026 Deputy Superintendent, Group-B, Group of T. B. Hospitals, MCGM - Corrigendum",
+      "origin_url": "https://mpsc.gov.in/adv_notification/8#004/2026",
+      "sha256": "b13f2b0791eabcec0b77458f0c0e61e8d31fe9b0955c1f8535c5a563a5d8387e",
+      "byte_size": 359818,
+      "page_count": 1,
+      "fetched_at": "2026-08-29T17:50:53.567840Z",
+      "relative_path": "mpsc/b13f2b0791eabcec.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "It is an advertisement for Deputy Superintendent positions."
+    },
+    {
+      "source_id": "mpsc",
+      "title": "Advt.No. 102/2022 Deputy Engineer (Mechanical), Maharashtra Mechanical Engineering Services, Group A-Corrigendum regarding revised posts and reservation, new applications (SBC) & postponement of screening test",
+      "origin_url": "https://mpsc.gov.in/adv_notification/8#102/2022",
+      "sha256": "ebeb93a4bbd1f1ad9446eaf801ceb147e452a0b75bf171e2ba62b11193781b2b",
+      "byte_size": 945646,
+      "page_count": 2,
+      "fetched_at": "2026-08-29T17:50:53.581662Z",
+      "relative_path": "mpsc/ebeb93a4bbd1f1ad.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "It advertises vacancies for Deputy Engineer positions and details application procedures."
+    },
+    {
+      "source_id": "mpsc",
+      "title": "Advt. No. 017/2026 Maharashtra Group-C Services Combine Preliminary Examination 2026 - Corrigendum regarding Revenue Village Officer (PESA), Children of Disabled/ deceased Ex-Servicemen & Extension to application submission",
+      "origin_url": "https://mpsc.gov.in/adv_notification/8#017/2026",
+      "sha256": "4bff397b3e7546cf29627cc29ebdc610b26eedf5e1818a62a9d730169c31d59a",
+      "byte_size": 1764437,
+      "page_count": 2,
+      "fetched_at": "2026-08-29T17:50:53.592362Z",
+      "relative_path": "mpsc/4bff397b3e7546cf.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "It announces a preliminary exam and extends the application window."
     }
   ]
 }

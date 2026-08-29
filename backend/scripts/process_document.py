@@ -39,7 +39,10 @@ def main(match: str) -> int:
             print(f"   [{p.severity}] {p.field}: {p.problem}")
     else:
         r = result.rules
-        print(f"   age {r.age.minimum_years}-{r.age.maximum_years} as on {r.age.reckoned_on}")
+        if r.age:
+            print(f"   age {r.age.minimum_years}-{r.age.maximum_years} as on {r.age.reckoned_on}")
+        else:
+            print("   age rule not readable")
         print(f"   {len(r.age_relaxations)} relaxations, {len(r.fees)} fees, {len(r.qualifications)} qualifications")
         ExamRulesStore(settings.exams_path).put(r)
         print("   saved")
