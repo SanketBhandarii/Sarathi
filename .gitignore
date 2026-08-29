@@ -23,3 +23,7 @@ Thumbs.db
 
 # Local data (cached official PDFs ARE committed on purpose - see data/README.md)
 *.log
+
+# planning documents - kept locally, never published
+Sarathi-Project-Blueprint.pdf
+allaboutthishackathon.txt
