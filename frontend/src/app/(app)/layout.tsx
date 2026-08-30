@@ -1,21 +1,30 @@
+import { redirect } from "next/navigation";
+
 import { Sidebar } from "@/components/sidebar";
 import { TopBar } from "@/components/top-bar";
-import { DEMO_STUDENT, DEMO_TODAY, api } from "@/lib/api";
-
-async function loadShell() {
-  try {
-    const [student, deadlines] = await Promise.all([
-      api.student(DEMO_STUDENT),
-      api.deadlines(DEMO_STUDENT, { today: DEMO_TODAY }),
-    ]);
-    return { student, urgent: deadlines.filter((d) => d.days_left <= 30).length };
-  } catch {
-    return { student: null, urgent: 0 };
-  }
-}
+import { api } from "@/lib/api";
+import { currentUser } from "@/lib/session";
+import { todayIso } from "@/lib/today";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  const { student, urgent } = await loadShell();
+  const session = await currentUser();
+  if (!session) redirect("/sign-in");
+  if (!session.me.student_id) redirect("/profile");
+
+  const studentId = session.me.student_id;
+  let urgent = 0;
+  let student = null;
+
+  try {
+    const [profile, deadlines] = await Promise.all([
+      api.student(studentId),
+      api.deadlines(studentId, { today: todayIso() }),
+    ]);
+    student = profile;
+    urgent = deadlines.filter((d) => d.days_left <= 30).length;
+  } catch {
+    student = null;
+  }
 
   return (
     <div className="min-h-screen p-0 lg:p-6">

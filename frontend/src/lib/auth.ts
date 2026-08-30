@@ -56,6 +56,20 @@ export const auth = {
   },
 };
 
+export async function startSession(session: Session): Promise<void> {
+  keepSession(session);
+  await fetch("/api/session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ token: session.token }),
+  });
+}
+
+export async function endSession(): Promise<void> {
+  forgetSession();
+  await fetch("/api/session", { method: "DELETE" });
+}
+
 const KEY = "sarathi.session";
 
 export function keepSession(session: Session): void {

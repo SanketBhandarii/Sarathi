@@ -1,20 +1,22 @@
 import { CheckCircleIcon, ClockIcon, RadarIcon, ShareIcon, PlusIcon, ListIcon, JournalIcon, CalendarIcon } from "@/components/icons";
 import { ExamTable } from "@/components/exam-table";
 import { Card, GhostButton, Offline, PageHead, PillButton, StatStrip } from "@/components/ui";
-import { DEMO_STUDENT, DEMO_TODAY, api } from "@/lib/api";
+import { api } from "@/lib/api";
+import { currentUser } from "@/lib/session";
+import { todayDate, todayIso } from "@/lib/today";
 import { greetingFor, longDate, rupees } from "@/lib/format";
 import type { AgeCliff, Deadline, JournalRun, Radar, SavingsSummary } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
-async function load() {
+async function load(studentId: number, today: string) {
   try {
     const [radar, deadlines, savings, cliff, journal] = await Promise.all([
-      api.radar(DEMO_STUDENT, { today: DEMO_TODAY }),
-      api.deadlines(DEMO_STUDENT, { today: DEMO_TODAY }),
-      api.savings(DEMO_STUDENT),
-      api.ageCliff(DEMO_STUDENT, { today: DEMO_TODAY }),
-      api.journal(DEMO_STUDENT, 4),
+      api.radar(studentId, { today }),
+      api.deadlines(studentId, { today }),
+      api.savings(studentId),
+      api.ageCliff(studentId, { today }),
+      api.journal(studentId, 4),
     ]);
     return { radar, deadlines, savings, cliff, journal };
   } catch {
@@ -28,7 +30,12 @@ function UrgencyDot({ days }: { days: number }) {
 }
 
 export default async function DashboardPage() {
-  const data = await load();
+  const session = await currentUser();
+  const studentId = session?.me.student_id;
+  if (!studentId) return <Offline hint="Your profile is not ready yet." />;
+
+  const today = todayIso();
+  const data = await load(studentId, today);
   if (!data) {
     return <Offline hint="This dashboard reads live data from the FastAPI backend." />;
   }
@@ -41,15 +48,15 @@ export default async function DashboardPage() {
     journal: JournalRun[];
   };
 
-  const today = new Date(DEMO_TODAY);
+
   const canApply = radar.entries.filter((e) => e.bucket === "apply_now");
   const totalChecks = journal.reduce((sum, run) => sum + run.checks_run, 0);
 
   return (
     <div className="flex flex-col gap-6">
       <PageHead
-        date={longDate(today)}
-        greeting={`${greetingFor(today.getHours() || 19)}! ${radar.student_name.split(" ")[0]},`}
+        date={longDate(todayDate())}
+        greeting={`${greetingFor(todayDate().getHours() || 19)}! ${radar.student_name.split(" ")[0]},`}
         actions={
           <>
             <GhostButton icon={<ShareIcon />}>Share</GhostButton>

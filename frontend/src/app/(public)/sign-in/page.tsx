@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { AuthShell, Field, Problem, inputClass, submitClass } from "@/components/auth-shell";
-import { auth, keepSession } from "@/lib/auth";
+import { auth, startSession } from "@/lib/auth";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -20,7 +20,7 @@ export default function SignInPage() {
     setProblem(null);
     try {
       const session = await auth.signIn(email.trim(), password);
-      keepSession(session);
+      await startSession(session);
       router.push(session.student_id ? "/dashboard" : "/profile");
     } catch (error) {
       setProblem(error instanceof Error ? error.message : "Please try again.");

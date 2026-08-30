@@ -1,6 +1,8 @@
 import { CalendarIcon, ClockIcon } from "@/components/icons";
 import { Card, Offline, PageHead } from "@/components/ui";
-import { DEMO_STUDENT, DEMO_TODAY, api } from "@/lib/api";
+import { api } from "@/lib/api";
+import { currentUser } from "@/lib/session";
+import { todayDate, todayIso } from "@/lib/today";
 import { longDate, shortDate } from "@/lib/format";
 import type { AgeCliff, Deadline } from "@/lib/types";
 
@@ -14,12 +16,17 @@ const URGENCY_TONE: Record<Deadline["urgency"], string> = {
 };
 
 export default async function DeadlinesPage() {
+  const session = await currentUser();
+  const studentId = session?.me.student_id;
+  if (!studentId) return <Offline hint="Your profile is not ready yet." />;
+
+  const today = todayIso();
   let deadlines: Deadline[];
   let cliff: AgeCliff;
   try {
     [deadlines, cliff] = await Promise.all([
-      api.deadlines(DEMO_STUDENT, { today: DEMO_TODAY }),
-      api.ageCliff(DEMO_STUDENT, { today: DEMO_TODAY }),
+      api.deadlines(studentId, { today }),
+      api.ageCliff(studentId, { today }),
     ]);
   } catch {
     return <Offline hint="Deadlines are worked out from the notifications on the backend." />;
@@ -27,7 +34,7 @@ export default async function DeadlinesPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHead date={longDate(new Date(DEMO_TODAY))} greeting="Deadlines" />
+      <PageHead date={longDate(todayDate())} greeting="Deadlines" />
 
       <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
         Every date here was read out of the commission&apos;s own notification, not copied from a

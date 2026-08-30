@@ -1,5 +1,6 @@
 import { Card, Offline } from "@/components/ui";
-import { DEMO_STUDENT, api } from "@/lib/api";
+import { api } from "@/lib/api";
+import { currentUser } from "@/lib/session";
 import type { JournalRun } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -67,9 +68,13 @@ function Run({ run }: { run: JournalRun }) {
 }
 
 export default async function JournalPage() {
+  const session = await currentUser();
+  const studentId = session?.me.student_id;
+  if (!studentId) return <Offline hint="Your profile is not ready yet." />;
+
   let runs: JournalRun[];
   try {
-    runs = await api.journal(DEMO_STUDENT, 12);
+    runs = await api.journal(studentId, 12);
   } catch {
     return <Offline hint="The journal is written by the agent into Postgres each night." />;
   }

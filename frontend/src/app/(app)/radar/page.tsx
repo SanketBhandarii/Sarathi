@@ -1,6 +1,8 @@
 import { ExamTable } from "@/components/exam-table";
 import { Card, Offline } from "@/components/ui";
-import { DEMO_STUDENT, DEMO_TODAY, api } from "@/lib/api";
+import { api } from "@/lib/api";
+import { currentUser } from "@/lib/session";
+import { todayDate, todayIso } from "@/lib/today";
 import type { Layer, Radar } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -22,9 +24,13 @@ const LAYER_NOTE: Record<Layer, string> = {
 };
 
 export default async function RadarPage() {
+  const session = await currentUser();
+  const studentId = session?.me.student_id;
+  if (!studentId) return <Offline hint="Your profile is not ready yet." />;
+
   let radar: Radar;
   try {
-    radar = await api.radar(DEMO_STUDENT, { today: DEMO_TODAY });
+    radar = await api.radar(studentId, { today: todayIso() });
   } catch {
     return <Offline hint="The Radar reads every exam from the backend." />;
   }

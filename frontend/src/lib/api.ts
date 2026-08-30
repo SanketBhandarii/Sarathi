@@ -55,5 +55,3 @@ export const api = {
     get<AgeCliff>(`/students/${id}/age-cliff`, { today: options.today }),
 };
 
-export const DEMO_TODAY = "2026-08-29";
-export const DEMO_STUDENT = 1;

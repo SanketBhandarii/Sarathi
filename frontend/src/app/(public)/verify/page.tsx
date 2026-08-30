@@ -4,7 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
 import { AuthShell, Field, Problem, inputClass, submitClass } from "@/components/auth-shell";
-import { auth, keepSession } from "@/lib/auth";
+import { auth, startSession } from "@/lib/auth";
 
 function VerifyForm() {
   const router = useRouter();
@@ -22,7 +22,7 @@ function VerifyForm() {
     setProblem(null);
     try {
       const session = await auth.verify(email, code.trim());
-      keepSession(session);
+      await startSession(session);
       router.push("/profile");
     } catch (error) {
       setProblem(error instanceof Error ? error.message : "Please try again.");
