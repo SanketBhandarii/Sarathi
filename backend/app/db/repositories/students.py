@@ -3,8 +3,53 @@ from __future__ import annotations
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.db.models import Student
+from app.db.models import QualificationRecord, Student
 from app.student.profile import Category, Education, Gender, StudentProfile
+from app.student.qualifications import EducationHistory, Level, MarksKind, Qualification
+
+
+def to_history(row: Student) -> EducationHistory:
+    return EducationHistory(
+        entries=[
+            Qualification(
+                level=Level(record.level),
+                board_or_university=record.board_or_university,
+                college=record.college,
+                stream=record.stream,
+                marks_kind=MarksKind(record.marks_kind),
+                marks=record.marks,
+                cgpa_scale=record.cgpa_scale,
+                passed_year=record.passed_year,
+                passed_on=record.passed_on,
+                is_completed=record.is_completed,
+                current_semester=record.current_semester,
+            )
+            for record in sorted(row.qualifications, key=lambda r: r.level)
+        ]
+    )
+
+
+def save_history(session: Session, row: Student, history: EducationHistory) -> None:
+    row.qualifications.clear()
+    session.flush()
+    for entry in history.entries:
+        session.add(
+            QualificationRecord(
+                student_id=row.id,
+                level=entry.level.value,
+                board_or_university=entry.board_or_university,
+                college=entry.college,
+                stream=entry.stream,
+                marks_kind=entry.marks_kind.value,
+                marks=entry.marks,
+                cgpa_scale=entry.cgpa_scale,
+                passed_year=entry.passed_year,
+                passed_on=entry.passed_on,
+                is_completed=entry.is_completed,
+                current_semester=entry.current_semester,
+            )
+        )
+    session.flush()
 
 
 def to_profile(row: Student) -> StudentProfile:
@@ -17,6 +62,7 @@ def to_profile(row: Student) -> StudentProfile:
         is_ex_serviceman=row.is_ex_serviceman,
         state=row.state,
         district=row.district,
+        education_history=to_history(row),
         education=Education(
             degree=row.degree,
             stream=row.stream,

@@ -16,6 +16,7 @@ from app.db.models import User
 from app.db.repositories import students as students_repo
 from app.language.phrases import Language
 from app.student.profile import Category, Education, Gender, StudentProfile
+from app.student.qualifications import EducationHistory, Level, Qualification
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -52,11 +53,13 @@ class ProfileIn(BaseModel):
     is_ex_serviceman: bool = False
     state: str = Field(min_length=2, max_length=64)
     district: str = Field(min_length=2, max_length=64)
-    degree: str = Field(min_length=1, max_length=64)
-    stream: str | None = None
-    completed_year: int | None = None
-    percentage: float | None = Field(default=None, ge=0, le=100)
-    is_completed: bool = True
+    qualifications: list[Qualification] = Field(default_factory=list)
+
+    @property
+    def highest(self) -> Qualification | None:
+        history = EducationHistory(entries=self.qualifications)
+        level = history.highest_completed
+        return history.by_level(level) if level else None
 
 
 class SessionOut(BaseModel):
@@ -161,6 +164,9 @@ def save_profile(
     user: User = Depends(current_user),
     db: Session = Depends(get_db),
 ) -> MeOut:
+    top = payload.highest
+    history = EducationHistory(entries=payload.qualifications)
+
     profile = StudentProfile(
         name=payload.name,
         date_of_birth=payload.date_of_birth,
@@ -171,15 +177,17 @@ def save_profile(
         state=payload.state,
         district=payload.district,
         education=Education(
-            degree=payload.degree,
-            stream=payload.stream,
-            completed_year=payload.completed_year,
-            percentage=payload.percentage,
-            is_completed=payload.is_completed,
+            degree=top.label if top else "Not given",
+            stream=top.stream if top else None,
+            completed_year=top.passed_year if top else None,
+            percentage=top.percentage if top else None,
+            is_completed=bool(top),
         ),
+        education_history=history,
     )
     row = students_repo.save_profile(db, profile, student_id=user.student_id)
     db.flush()
+    students_repo.save_history(db, row, history)
     user.student_id = row.id
     db.flush()
     return MeOut(email=user.email, student_id=row.id, has_profile=True, name=row.name)
