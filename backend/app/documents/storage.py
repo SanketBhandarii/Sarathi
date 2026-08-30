@@ -110,6 +110,14 @@ def read_master(student_id: int, kind: DocumentKind) -> bytes | None:
     return path.read_bytes() if path.exists() else None
 
 
+def viewable_now(url: str, is_private: bool) -> str:
+    if not is_private:
+        return url
+    store = get_document_store()
+    signer = getattr(store, "viewable_url", None)
+    return signer(url) if signer else url
+
+
 def get_document_store() -> DocumentStore:
     settings = get_settings()
     if settings.imagekit_private_key and settings.imagekit_url_endpoint:

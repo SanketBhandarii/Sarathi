@@ -9,6 +9,7 @@ from app.api.routes import (
     documents,
     exams,
     health,
+    inside,
     journal,
     my_documents,
     plan,
@@ -40,3 +41,4 @@ app.include_router(my_documents.router)
 app.include_router(journal.router)
 app.include_router(plan.router)
 app.include_router(changes.router)
+app.include_router(inside.router)

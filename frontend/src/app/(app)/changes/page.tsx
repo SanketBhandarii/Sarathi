@@ -1,4 +1,4 @@
-import { JournalIcon, QuoteIcon } from "@/components/icons";
+import { AlertIcon, ChevronIcon } from "@/components/icons";
 import { Card, Offline, PageHead } from "@/components/ui";
 import { longDate, shortDate } from "@/lib/format";
 import { currentUser } from "@/lib/session";
@@ -8,91 +8,25 @@ export const dynamic = "force-dynamic";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8020";
 
-interface RuleChange {
-  kind: string;
-  field: string;
-  told_you: string | null;
-  now_says: string | null;
-  is_worse_for_student: boolean;
-  plain_words: string;
-  old_citation: { page: number; quote: string } | null;
-  new_citation: { page: number; quote: string } | null;
-}
-
-interface ExamChange {
+interface PublishedCorrection {
   exam_name: string;
+  official_title: string;
+  body: string;
   source_id: string;
-  noticed_on: string;
-  from_a_real_second_version: boolean;
-  how_this_was_made: string;
-  corrigendum: {
-    apology: string;
-    has_changes: boolean;
-    changes: RuleChange[];
-  };
+  origin_url: string;
+  fetched_on: string;
+  we_could_read_it: boolean;
+  what_we_can_say: string;
 }
 
-async function load(studentId: number): Promise<ExamChange[] | null> {
+async function load(studentId: number): Promise<PublishedCorrection[] | null> {
   try {
     const response = await fetch(`${BASE}/students/${studentId}/changes`, { cache: "no-store" });
     if (!response.ok) return null;
-    return (await response.json()) as ExamChange[];
+    return (await response.json()) as PublishedCorrection[];
   } catch {
     return null;
   }
-}
-
-function Change({ change }: { change: RuleChange }) {
-  const bothQuotes =
-    change.old_citation !== null &&
-    change.new_citation !== null &&
-    change.old_citation.quote.trim() !== change.new_citation.quote.trim();
-
-  return (
-    <li
-      className={`rounded-card border px-4 py-3.5 ${
-        change.is_worse_for_student ? "border-stop/25 bg-stop-soft" : "border-line bg-page"
-      }`}
-    >
-      <p
-        className={`text-[13px] leading-relaxed ${
-          change.is_worse_for_student ? "font-medium text-stop" : "text-ink"
-        }`}
-      >
-        {change.plain_words}
-      </p>
-
-      <div className={`mt-2.5 grid gap-2 ${bothQuotes ? "sm:grid-cols-2" : ""}`}>
-        {bothQuotes && change.old_citation ? (
-          <div className="rounded-[8px] border border-line bg-shell px-3 py-2">
-            <p className="text-[10.5px] font-medium uppercase tracking-wide text-ink-faint">
-              What I told you
-            </p>
-            <p className="mt-1 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-ink-soft">
-              <QuoteIcon className="mt-[3px] h-3 w-3 shrink-0" />
-              <span>
-                page {change.old_citation.page}: “{change.old_citation.quote.slice(0, 110)}”
-              </span>
-            </p>
-          </div>
-        ) : null}
-
-        {change.new_citation ? (
-          <div className="rounded-[8px] border border-accent/25 bg-accent-soft px-3 py-2">
-            <p className="text-[10.5px] font-medium uppercase tracking-wide text-accent/80">
-              {bothQuotes ? "What it says now" : "The line this came from"}
-            </p>
-            <p className="mt-1 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-accent">
-              <QuoteIcon className="mt-[3px] h-3 w-3 shrink-0" />
-              <span>
-                page {change.new_citation.page}: “{change.new_citation.quote.slice(0, 110)}”
-              </span>
-            </p>
-          </div>
-        ) : null}
-      </div>
-    </li>
-  );
 }
 
 export default async function ChangesPage() {
@@ -100,69 +34,86 @@ export default async function ChangesPage() {
   const studentId = session?.me.student_id;
   if (!studentId) return <Offline hint="Your profile is not ready yet." />;
 
-  const changes = await load(studentId);
-  if (!changes) {
+  const corrections = await load(studentId);
+  if (!corrections) {
     return <Offline hint="Corrections are worked out on the backend." />;
   }
 
-  const urgent = changes.filter((c) =>
-    c.corrigendum.changes.some((change) => change.is_worse_for_student),
-  ).length;
+  const unreadable = corrections.filter((c) => !c.we_could_read_it).length;
 
   return (
     <div className="flex flex-col gap-6">
-      <PageHead date={longDate(todayDate())} greeting="When I was wrong" />
+      <PageHead date={longDate(todayDate())} greeting="Corrections" />
 
       <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
-        Indian commissions change dates and rules after they publish. Most websites quietly update
-        and say nothing. Sarathi re reads every notification, and when what it told you no longer
-        matches the document, it says so.
+        Commissions change dates and rules after they publish, and they do it in a separate notice
+        most students never see. Sarathi watches for those notices. When it can read one, it tells
+        you exactly what changed and admits what it told you before was wrong.
       </p>
 
-      {urgent > 0 ? (
-        <div className="rounded-card border border-stop/25 bg-stop-soft px-5 py-4">
-          <p className="text-[13.5px] font-medium text-stop">
-            {urgent} {urgent === 1 ? "exam has" : "exams have"} moved earlier than I told you.
-            You have less time than you thought.
+      {corrections.length === 0 ? (
+        <Card icon={<AlertIcon className="h-4 w-4" />} title="Nothing has changed">
+          <p className="border-t border-line px-5 py-10 text-center text-[13px] text-ink-soft">
+            No commission has published a correction for the exams you are watching.
+          </p>
+        </Card>
+      ) : (
+        <Card
+          icon={<AlertIcon className="h-4 w-4" />}
+          title={`${corrections.length} correction${corrections.length === 1 ? "" : "s"} published`}
+        >
+          <ul className="border-t border-line">
+            {corrections.map((item) => (
+              <li key={item.origin_url} className="border-b border-line px-5 py-4 last:border-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-[13.5px] font-medium text-ink">{item.exam_name}</p>
+                  <span
+                    className={`rounded-[6px] px-2 py-0.5 text-[11px] font-medium ${
+                      item.we_could_read_it
+                        ? "bg-good-soft text-good"
+                        : "bg-sun-soft text-sun"
+                    }`}
+                  >
+                    {item.we_could_read_it ? "read" : "scanned, cannot read"}
+                  </span>
+                  <span className="text-[11.5px] text-ink-faint">
+                    seen {shortDate(item.fetched_on)}
+                  </span>
+                </div>
+
+                <p className="mt-1 text-[12px] text-ink-soft">{item.official_title}</p>
+                <p className="mt-2 text-[12.5px] leading-relaxed text-ink">
+                  {item.what_we_can_say}
+                </p>
+
+                <a
+                  href={item.origin_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-[9px] border border-line bg-shell px-3.5 py-2 text-[12.5px] font-medium text-ink transition-colors hover:border-accent hover:text-accent"
+                >
+                  Open the notice from {item.body}
+                  <ChevronIcon className="h-3.5 w-3.5" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
+      {unreadable > 0 ? (
+        <div className="rounded-card border border-line bg-page px-5 py-4">
+          <p className="text-[12.5px] font-medium text-ink">
+            Why {unreadable} of these say &quot;cannot read&quot;
+          </p>
+          <p className="mt-1.5 text-[12px] leading-relaxed text-ink-soft">
+            UPSC and MPSC publish corrections as photographs of paper rather than as text. There is
+            nothing in the file to read. Sarathi will not invent what a notice says, so it does the
+            one useful thing it can: it tells you the correction exists, which is the part students
+            usually miss, and takes you straight to the commission&apos;s own page.
           </p>
         </div>
       ) : null}
-
-      {changes.length === 0 ? (
-        <Card icon={<JournalIcon className="h-4 w-4" />} title="Nothing has changed">
-          <p className="border-t border-line px-5 py-10 text-center text-[13px] text-ink-soft">
-            Every rule still matches what I told you.
-          </p>
-        </Card>
-      ) : null}
-
-      {changes.map((change) => (
-        <Card
-          key={`${change.source_id}-${change.exam_name}`}
-          icon={<JournalIcon className="h-4 w-4" />}
-          title={change.exam_name}
-        >
-          <div className="border-t border-line px-5 py-4">
-            <p className="text-[13.5px] font-medium text-ink">{change.corrigendum.apology}</p>
-            <p className="mt-1 text-[11.5px] text-ink-faint">
-              Noticed on {shortDate(change.noticed_on)}
-            </p>
-
-            <ul className="mt-4 flex flex-col gap-3">
-              {change.corrigendum.changes.map((item, index) => (
-                <Change key={index} change={item} />
-              ))}
-            </ul>
-
-            {!change.from_a_real_second_version ? (
-              <p className="mt-4 rounded-[9px] border border-line bg-page px-3.5 py-2.5 text-[11.5px] leading-relaxed text-ink-soft">
-                <span className="font-medium text-ink">How this one was made: </span>
-                {change.how_this_was_made}
-              </p>
-            ) : null}
-          </div>
-        </Card>
-      ))}
     </div>
   );
 }

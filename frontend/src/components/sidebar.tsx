@@ -3,15 +3,24 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { AlertIcon, CalendarIcon, FileIcon, GridIcon, JournalIcon, RadarIcon } from "@/components/icons";
+import {
+  AlertIcon,
+  CalendarIcon,
+  CogIcon,
+  FileIcon,
+  GridIcon,
+  JournalIcon,
+  RadarIcon,
+} from "@/components/icons";
 
 const LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: GridIcon },
   { href: "/radar", label: "Exam Radar", icon: RadarIcon },
   { href: "/deadlines", label: "Deadlines", icon: CalendarIcon },
   { href: "/documents", label: "Documents", icon: FileIcon },
-  { href: "/changes", label: "When I was wrong", icon: AlertIcon },
+  { href: "/changes", label: "Corrections", icon: AlertIcon },
   { href: "/journal", label: "Agent Journal", icon: JournalIcon },
+  { href: "/inside", label: "Inside Sarathi", icon: CogIcon },
 ];
 
 export function Sidebar({ state, district }: { state: string; district: string }) {

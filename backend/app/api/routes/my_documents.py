@@ -15,7 +15,7 @@ from app.db.models import StudentDocument, User
 from app.documents.spec import KIND_LABEL, DocumentKind
 from app.documents.known_specs import every_body
 from app.documents.maker import CannotMeetSpec, make_document
-from app.documents.storage import get_document_store, keep_master, read_master
+from app.documents.storage import get_document_store, keep_master, read_master, viewable_now
 
 router = APIRouter(prefix="/me/documents", tags=["my documents"])
 
@@ -64,7 +64,7 @@ def _to_out(row: StudentDocument) -> MasterDocumentOut:
         label=KIND_LABEL[kind],
         guidance=GUIDANCE[kind],
         file_id=row.file_id,
-        view_url=row.view_url,
+        view_url=viewable_now(row.url, row.is_private),
         is_private=row.is_private,
         width_px=row.width_px,
         height_px=row.height_px,

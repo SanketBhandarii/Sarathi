@@ -1,77 +1,86 @@
 from __future__ import annotations
 
-from datetime import date, timedelta
+import re
+from datetime import date
 
 from fastapi import APIRouter, Depends
 from pydantic import BaseModel
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db, get_student_or_404
-from app.corrigendum.compare import compare
-from app.corrigendum.diff import Corrigendum
-from app.db.models import Student
-from app.db.repositories import documents as docs_repo
+from app.core.config import get_settings
+from app.db.models import SourceDocument, Student
 from app.exams.naming import name_for
-from app.extraction.schema import ExamRules, KeyDate
+from app.extraction.document import has_readable_text, load_pages
+from app.storage.cache import NotificationCache
 
 router = APIRouter(prefix="/students", tags=["changes"])
 
+CORRECTION_WORDS = (
+    r"corrigend",
+    r"notice regarding change",
+    r"amendment",
+    r"revised",
+    r"change in recruitment",
+    r"addendum",
+)
 
-class ExamChange(BaseModel):
+
+class PublishedCorrection(BaseModel):
     exam_name: str
+    official_title: str
+    body: str
     source_id: str
-    noticed_on: date
-    from_a_real_second_version: bool
-    how_this_was_made: str
-    corrigendum: Corrigendum
+    origin_url: str
+    fetched_on: date
+    we_could_read_it: bool
+    what_we_can_say: str
 
 
-def _earlier_version(rules: ExamRules, days_back: int) -> ExamRules:
-    older = rules.model_copy(deep=True)
-    older.document_sha256 = f"{rules.document_sha256}-earlier"
-    older.key_dates = [
-        KeyDate(
-            label=entry.label,
-            happens_on=entry.happens_on + timedelta(days=days_back),
-            citation=entry.citation,
-        )
-        for entry in rules.key_dates
-    ]
-    return older
+def _looks_like_a_correction(title: str) -> bool:
+    return any(re.search(word, title, re.IGNORECASE) for word in CORRECTION_WORDS)
 
 
-@router.get("/{student_id}/changes", response_model=list[ExamChange])
+@router.get("/{student_id}/changes", response_model=list[PublishedCorrection])
 def read_changes(
     student: Student = Depends(get_student_or_404),
     db: Session = Depends(get_db),
-) -> list[ExamChange]:
-    found: list[ExamChange] = []
+) -> list[PublishedCorrection]:
+    settings = get_settings()
+    cache = NotificationCache(settings.notifications_path)
 
-    for rules in docs_repo.all_rules(db):
-        if not rules.key_dates:
+    found: list[PublishedCorrection] = []
+    for document in db.scalars(select(SourceDocument)).all():
+        if not _looks_like_a_correction(document.title):
             continue
 
-        older = _earlier_version(rules, days_back=6)
-        result = compare(older, rules)
-        if not result.has_changes:
-            continue
+        cached = cache.index.by_hash().get(document.sha256)
+        readable = False
+        if cached is not None:
+            readable = has_readable_text(load_pages(cached.path_under(cache.root)))
 
-        named = name_for(rules.exam_name, rules.source_id)
-        result.exam_name = named.short
+        named = name_for(document.title, document.source_id)
         found.append(
-            ExamChange(
+            PublishedCorrection(
                 exam_name=named.short,
-                source_id=rules.source_id,
-                noticed_on=date.today(),
-                from_a_real_second_version=False,
-                how_this_was_made=(
-                    "We have only read one version of this notification so far. To show what "
-                    "Sarathi does when a commission changes a date, this compares the real "
-                    "notification against an earlier reading of it. The comparison itself is "
-                    "the same code that runs on a real corrigendum."
+                official_title=named.full,
+                body=named.body_full,
+                source_id=document.source_id,
+                origin_url=document.origin_url,
+                fetched_on=document.fetched_at.date(),
+                we_could_read_it=readable,
+                what_we_can_say=(
+                    "Sarathi has read this one and will tell you exactly what changed."
+                    if readable
+                    else (
+                        "The commission published this as a photograph of paper, so Sarathi "
+                        "cannot read what changed. It will not guess. Open the notice and "
+                        "read it yourself."
+                    )
                 ),
-                corrigendum=result,
             )
         )
 
+    found.sort(key=lambda c: c.fetched_on, reverse=True)
     return found

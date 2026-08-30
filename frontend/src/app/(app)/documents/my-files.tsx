@@ -48,9 +48,7 @@ function Slot({
   onSaved: (kind: Kind) => void;
 }) {
   const [saved, setSaved] = useState(Boolean(item.file_id));
-  const [preview, setPreview] = useState<string | null>(
-    item.is_private ? null : item.view_url,
-  );
+  const [preview, setPreview] = useState<string | null>(item.view_url);
   const [sizes, setSizes] = useState<SizedFile[]>([]);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
@@ -117,6 +115,11 @@ function Slot({
           </div>
           <p className="mt-1 text-[12.5px] text-ink-soft">Give {WHAT_TO_GIVE[item.kind]}.</p>
           <p className="mt-0.5 text-[11.5px] leading-relaxed text-ink-faint">{item.guidance}</p>
+          {item.is_private ? (
+            <p className="mt-1 text-[11px] text-ink-faint">
+              Kept private. Only you can open it, through a link that expires.
+            </p>
+          ) : null}
         </div>
 
         <div className="flex items-center gap-3">
