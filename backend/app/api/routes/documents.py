@@ -6,7 +6,7 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from pydantic import BaseModel
 
 from app.documents.maker import CannotMeetSpec, make_document
-from app.documents.spec import KIND_LABEL, DocumentKind, DocumentSpec
+from app.documents.spec import IBPS_PO_SPECS, KIND_LABEL, DocumentKind, DocumentSpec
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -21,6 +21,32 @@ class MadeDocumentOut(BaseModel):
     matches_spec: bool
     needed: str
     image_base64: str
+
+
+class SpecOut(BaseModel):
+    kind: DocumentKind
+    label: str
+    width_px: int | None
+    height_px: int | None
+    min_kb: float | None
+    max_kb: float | None
+    needed: str
+
+
+@router.get("/specs", response_model=list[SpecOut])
+def read_specs() -> list[SpecOut]:
+    return [
+        SpecOut(
+            kind=spec.kind,
+            label=KIND_LABEL[spec.kind],
+            width_px=spec.width_px,
+            height_px=spec.height_px,
+            min_kb=spec.min_kb,
+            max_kb=spec.max_kb,
+            needed=spec.describe(),
+        )
+        for spec in IBPS_PO_SPECS
+    ]
 
 
 @router.post("/make", response_model=MadeDocumentOut)

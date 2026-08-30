@@ -136,3 +136,25 @@ export interface AgeCliff {
   has_warning: boolean;
   message: string;
 }
+
+export interface DocumentSpec {
+  kind: "photograph" | "signature" | "thumb_impression";
+  label: string;
+  width_px: number | null;
+  height_px: number | null;
+  min_kb: number | null;
+  max_kb: number | null;
+  needed: string;
+}
+
+export interface MadeDocument {
+  kind: DocumentSpec["kind"];
+  label: string;
+  width_px: number;
+  height_px: number;
+  size_kb: number;
+  padded: boolean;
+  matches_spec: boolean;
+  needed: string;
+  image_base64: string;
+}
