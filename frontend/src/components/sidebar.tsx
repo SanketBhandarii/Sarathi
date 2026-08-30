@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { AlertIcon, CalendarIcon, FileIcon, GridIcon, JournalIcon, RadarIcon } from "@/components/icons";
 
 const LINKS = [
-  { href: "/", label: "Dashboard", icon: GridIcon },
+  { href: "/dashboard", label: "Dashboard", icon: GridIcon },
   { href: "/radar", label: "Exam Radar", icon: RadarIcon },
   { href: "/deadlines", label: "Deadlines", icon: CalendarIcon },
   { href: "/documents", label: "Documents", icon: FileIcon },
@@ -14,13 +14,13 @@ const LINKS = [
   { href: "/journal", label: "Agent Journal", icon: JournalIcon },
 ];
 
-const LAYER_DOTS = [
-  { label: "Central government", tone: "bg-[#7c5cff]" },
-  { label: "Maharashtra", tone: "bg-[#33c481]" },
-  { label: "Nagpur district", tone: "bg-[#f5a524]" },
-];
+export function Sidebar({ state, district }: { state: string; district: string }) {
+  const layers = [
+    { label: "Central government", tone: "bg-[#7c5cff]" },
+    { label: state, tone: "bg-[#33c481]" },
+    { label: `${district} district`, tone: "bg-[#f5a524]" },
+  ];
 
-export function Sidebar() {
   const pathname = usePathname();
 
   return (
@@ -33,7 +33,7 @@ export function Sidebar() {
 
       <nav className="flex flex-col gap-1 px-4">
         {LINKS.map(({ href, label, icon: Icon }) => {
-          const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          const active = pathname === href || pathname.startsWith(href + "/");
           return (
             <Link
               key={href}
@@ -57,7 +57,7 @@ export function Sidebar() {
       <div className="px-4">
         <p className="px-3.5 pb-2 text-[13.5px] font-medium text-ink">Your layers</p>
         <ul className="flex flex-col gap-0.5">
-          {LAYER_DOTS.map(({ label, tone }) => (
+          {layers.map(({ label, tone }) => (
             <li
               key={label}
               className="flex items-center gap-3 rounded-[9px] px-3.5 py-2 text-[13px] text-ink-soft"

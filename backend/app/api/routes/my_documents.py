@@ -13,7 +13,9 @@ from app.api.current_user import current_user
 from app.api.deps import get_db
 from app.db.models import StudentDocument, User
 from app.documents.spec import KIND_LABEL, DocumentKind
-from app.documents.storage import get_document_store
+from app.documents.known_specs import every_body
+from app.documents.maker import CannotMeetSpec, make_document
+from app.documents.storage import get_document_store, keep_master, read_master
 
 router = APIRouter(prefix="/me/documents", tags=["my documents"])
 
@@ -123,6 +125,7 @@ async def upload_master(
             ),
         )
 
+    keep_master(student_id, kind, payload)
     stored = get_document_store().save(student_id=student_id, kind=kind, payload=payload)
 
     row = db.scalar(
@@ -144,3 +147,54 @@ async def upload_master(
     db.flush()
 
     return _to_out(row)
+
+
+class SizedFileOut(BaseModel):
+    source_id: str
+    body: str
+    needed: str
+    width_px: int
+    height_px: int
+    size_kb: float
+    matches: bool
+    padded: bool
+    image_base64: str
+
+
+@router.get("/{kind}/sizes", response_model=list[SizedFileOut])
+def sizes_for(
+    kind: DocumentKind,
+    user: User = Depends(current_user),
+) -> list[SizedFileOut]:
+    import base64
+
+    student_id = _student_id(user)
+    master = read_master(student_id, kind)
+    if master is None:
+        raise HTTPException(
+            status_code=404, detail=f"Add your {KIND_LABEL[kind].lower()} first."
+        )
+
+    made: list[SizedFileOut] = []
+    for rules in every_body():
+        spec = next((s for s in rules.specs if s.kind is kind), None)
+        if spec is None:
+            continue
+        try:
+            result = make_document(master, spec)
+        except CannotMeetSpec:
+            continue
+        made.append(
+            SizedFileOut(
+                source_id=rules.source_id,
+                body=rules.body,
+                needed=spec.describe(),
+                width_px=result.width_px,
+                height_px=result.height_px,
+                size_kb=result.size_kb,
+                matches=result.matches(spec),
+                padded=result.padded,
+                image_base64=base64.b64encode(result.payload).decode(),
+            )
+        )
+    return made

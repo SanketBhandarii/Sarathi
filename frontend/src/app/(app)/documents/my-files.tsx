@@ -1,0 +1,255 @@
+"use client";
+
+import { useState } from "react";
+
+import { PlusIcon } from "@/components/icons";
+import { readProblem } from "@/lib/auth";
+
+const BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8020";
+
+export type Kind = "photograph" | "signature" | "thumb_impression";
+
+export interface MasterDocument {
+  kind: Kind;
+  label: string;
+  guidance: string;
+  file_id: string | null;
+  view_url: string | null;
+  is_private: boolean;
+  width_px: number | null;
+  height_px: number | null;
+}
+
+interface SizedFile {
+  source_id: string;
+  body: string;
+  needed: string;
+  width_px: number;
+  height_px: number;
+  size_kb: number;
+  matches: boolean;
+  padded: boolean;
+  image_base64: string;
+}
+
+const WHAT_TO_GIVE: Record<Kind, string> = {
+  photograph: "a passport style photo of your face",
+  signature: "a picture of your signature on white paper",
+  thumb_impression: "a picture of your left thumb impression",
+};
+
+function Slot({
+  document: item,
+  token,
+  onSaved,
+}: {
+  document: MasterDocument;
+  token: string;
+  onSaved: (kind: Kind) => void;
+}) {
+  const [saved, setSaved] = useState(Boolean(item.file_id));
+  const [preview, setPreview] = useState<string | null>(
+    item.is_private ? null : item.view_url,
+  );
+  const [sizes, setSizes] = useState<SizedFile[]>([]);
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+
+  async function loadSizes() {
+    try {
+      const response = await fetch(`${BASE}/me/documents/${item.kind}/sizes`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (!response.ok) return;
+      setSizes((await response.json()) as SizedFile[]);
+    } catch {
+      /* leave the sizes empty */
+    }
+  }
+
+  async function onPick(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setBusy(true);
+    setProblem(null);
+    setPreview(URL.createObjectURL(file));
+
+    const form = new FormData();
+    form.append("file", file);
+
+    try {
+      const response = await fetch(`${BASE}/me/documents/${item.kind}`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: form,
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(readProblem(data));
+      setSaved(true);
+      onSaved(item.kind);
+      await loadSizes();
+    } catch (error) {
+      setProblem(error instanceof Error ? error.message : "Please try again.");
+      setPreview(null);
+      setSaved(false);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="border-b border-line px-5 py-5 last:border-0">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <h3 className="text-[14px] font-semibold text-ink">{item.label}</h3>
+            {saved ? (
+              <span className="rounded-[6px] bg-good-soft px-2 py-0.5 text-[11px] font-medium text-good">
+                saved to your account
+              </span>
+            ) : (
+              <span className="rounded-[6px] bg-sun-soft px-2 py-0.5 text-[11px] font-medium text-sun">
+                not added yet
+              </span>
+            )}
+          </div>
+          <p className="mt-1 text-[12.5px] text-ink-soft">Give {WHAT_TO_GIVE[item.kind]}.</p>
+          <p className="mt-0.5 text-[11.5px] leading-relaxed text-ink-faint">{item.guidance}</p>
+        </div>
+
+        <div className="flex items-center gap-3">
+          {preview ? (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={preview}
+              alt={item.label}
+              className="h-[72px] w-[72px] rounded-[8px] border border-line object-cover"
+            />
+          ) : null}
+
+          <div className="flex flex-col gap-2">
+            <label className="flex cursor-pointer items-center gap-1.5 whitespace-nowrap rounded-[9px] border border-line bg-shell px-3.5 py-2 text-[12.5px] font-medium text-ink transition-colors hover:border-accent hover:text-accent">
+              <PlusIcon className="h-[15px] w-[15px]" />
+              {busy ? "Saving" : saved ? "Replace" : `Add your ${item.label.toLowerCase()}`}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={onPick}
+                disabled={busy}
+              />
+            </label>
+
+            {saved && sizes.length === 0 ? (
+              <button
+                type="button"
+                onClick={loadSizes}
+                className="rounded-[9px] bg-brand px-3.5 py-2 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
+              >
+                Make every size
+              </button>
+            ) : null}
+          </div>
+        </div>
+      </div>
+
+      {problem ? (
+        <p className="mt-3 rounded-[8px] bg-stop-soft px-3 py-2 text-[12px] text-stop">{problem}</p>
+      ) : null}
+
+      {sizes.length > 0 ? (
+        <div className="mt-4">
+          <p className="text-[12px] font-medium text-ink">
+            Made from the one you gave, ready for every commission
+          </p>
+          <div className="mt-2.5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {sizes.map((size) => (
+              <div key={size.source_id} className="rounded-card border border-line bg-page p-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-[12.5px] font-semibold text-ink">
+                    {size.source_id.toUpperCase()}
+                  </span>
+                  <span
+                    className={`rounded-[6px] px-2 py-0.5 text-[10.5px] font-medium ${
+                      size.matches ? "bg-good-soft text-good" : "bg-stop-soft text-stop"
+                    }`}
+                  >
+                    {size.matches ? "ready" : "no fit"}
+                  </span>
+                </div>
+
+                <div className="mt-2.5 flex items-center justify-center rounded-[8px] bg-shell py-2.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`data:image/jpeg;base64,${size.image_base64}`}
+                    alt={`${item.label} for ${size.source_id}`}
+                    className="max-h-[86px] rounded-[5px] border border-line"
+                  />
+                </div>
+
+                <p className="mt-2 text-[11.5px] tabular text-ink">
+                  {size.width_px} × {size.height_px} px · {size.size_kb} KB
+                </p>
+                <p className="mt-0.5 text-[11px] leading-relaxed text-ink-faint">
+                  needs {size.needed}
+                </p>
+
+                <a
+                  href={`data:image/jpeg;base64,${size.image_base64}`}
+                  download={`${item.kind}_${size.source_id}.jpg`}
+                  className="mt-2.5 block rounded-[8px] bg-brand px-3 py-1.5 text-center text-[11.5px] font-medium text-white transition-opacity hover:opacity-90"
+                >
+                  Save
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+export function MyFiles({
+  documents,
+  token,
+}: {
+  documents: MasterDocument[];
+  token: string;
+}) {
+  const [added, setAdded] = useState<Set<Kind>>(
+    new Set(documents.filter((item) => item.file_id).map((item) => item.kind)),
+  );
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-3">
+        <p className="text-[12.5px] text-ink-soft">
+          {added.size} of {documents.length} added
+        </p>
+        {added.size === documents.length ? (
+          <span className="rounded-pill bg-good-soft px-2.5 py-1 text-[11.5px] font-medium text-good">
+            all set
+          </span>
+        ) : null}
+      </div>
+      <div className="border-y border-line bg-accent-soft px-5 py-3.5">
+        <p className="text-[12px] leading-relaxed text-accent">
+          Give each picture once. Sarathi keeps the original and makes every size any commission
+          asks for, so you never resize anything again. Your signature and thumb impression are
+          kept private.
+        </p>
+      </div>
+      {documents.map((item) => (
+        <Slot
+          key={item.kind}
+          document={item}
+          token={token}
+          onSaved={(kind) => setAdded((current) => new Set(current).add(kind))}
+        />
+      ))}
+    </div>
+  );
+}

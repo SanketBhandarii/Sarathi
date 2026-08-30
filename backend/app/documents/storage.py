@@ -93,6 +93,23 @@ class ImageKitDocumentStore:
         )
 
 
+def master_path(student_id: int, kind: DocumentKind) -> Path:
+    from app.core.config import get_settings
+
+    root = get_settings().notifications_path.parent / "masters" / f"student{student_id}"
+    root.mkdir(parents=True, exist_ok=True)
+    return root / f"{kind.value}.bin"
+
+
+def keep_master(student_id: int, kind: DocumentKind, payload: bytes) -> None:
+    master_path(student_id, kind).write_bytes(payload)
+
+
+def read_master(student_id: int, kind: DocumentKind) -> bytes | None:
+    path = master_path(student_id, kind)
+    return path.read_bytes() if path.exists() else None
+
+
 def get_document_store() -> DocumentStore:
     settings = get_settings()
     if settings.imagekit_private_key and settings.imagekit_url_endpoint:
