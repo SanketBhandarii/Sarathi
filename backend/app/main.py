@@ -1,5 +1,9 @@
 from __future__ import annotations
 
+import asyncio
+import logging
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -17,7 +21,27 @@ from app.api.routes import (
     students,
 )
 
+logging.basicConfig(level=logging.INFO)
+
+
+@asynccontextmanager
+async def lifespan(_: FastAPI):
+    from app.journal.scheduler import is_enabled, watch_the_clock
+
+    task = asyncio.create_task(watch_the_clock()) if is_enabled() else None
+    try:
+        yield
+    finally:
+        if task is not None:
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
+
+
 app = FastAPI(
+    lifespan=lifespan,
     title="Sarathi",
     description="An agent that watches government exams for one student.",
     version="0.1.0",

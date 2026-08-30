@@ -230,5 +230,5 @@ flowchart LR
 
 Two things are genuinely waiting on AWS credits, and both are real rather than decorative:
 
-- **AgentCore Runtime + EventBridge** give the agent an alarm clock. Today the nightly script exists and works; what is missing is the cloud runtime that calls it.
+- **AgentCore Runtime + EventBridge** would move the nightly run off this machine. It already schedules itself inside the app at 02:15 IST and will not run twice in a day.
 - **Bedrock vision** would read MPSC's scanned notifications. They are photographs of paper, so no amount of text extraction will ever read them.

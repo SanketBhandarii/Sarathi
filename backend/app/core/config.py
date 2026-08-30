@@ -42,6 +42,8 @@ class Settings(BaseSettings):
     session_secret: str = "change-me-in-production"
     session_hours: int = 720
 
+    run_nightly_checks: bool = True
+
     notification_cache_dir: Path = BACKEND_ROOT / ".." / "data" / "notifications"
     exam_data_dir: Path = BACKEND_ROOT / ".." / "data" / "exams"
 

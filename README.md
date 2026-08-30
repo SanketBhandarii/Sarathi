@@ -145,6 +145,7 @@ Open http://localhost:3000
 
 ```bash
 MODEL_PROVIDER=groq            # or bedrock
+RUN_NIGHTLY_CHECKS=true        # the agent's own alarm clock, 02:15 IST
 GROQ_API_KEY=
 DATABASE_URL=                  # postgres connection string
 SESSION_SECRET=                # any long random string
