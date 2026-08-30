@@ -6,6 +6,9 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.db.models import ExamRuleRecord, SourceDocument
+from app.apply.links import ApplyLink, apply_links_for
+from app.core.config import get_settings
+from app.extraction.document import load_pages
 from app.extraction.schema import ExamRules
 
 router = APIRouter(prefix="/exams", tags=["exams"])
@@ -54,3 +57,16 @@ def read_exam(document_sha256: str, db: Session = Depends(get_db)) -> dict[str, 
         "could_not_verify": rules.could_not_verify,
         "citation_count": len(rules.all_citations()),
     }
+
+
+@router.get("/{document_sha256}/apply-links", response_model=list[ApplyLink])
+def read_apply_links(document_sha256: str, db: Session = Depends(get_db)) -> list[ApplyLink]:
+    document = db.scalar(
+        select(SourceDocument).where(SourceDocument.sha256 == document_sha256)
+    )
+    if document is None:
+        raise HTTPException(status_code=404, detail="no such document")
+
+    root = get_settings().notifications_path
+    pages = load_pages(root / document.relative_path)
+    return apply_links_for(document.source_id, pages)

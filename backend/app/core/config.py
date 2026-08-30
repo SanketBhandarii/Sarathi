@@ -32,6 +32,15 @@ class Settings(BaseSettings):
     twilio_auth_token: str = ""
     twilio_whatsapp_from: str = ""
 
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""
+
+    session_secret: str = "change-me-in-production"
+    session_hours: int = 720
+
     notification_cache_dir: Path = BACKEND_ROOT / ".." / "data" / "notifications"
     exam_data_dir: Path = BACKEND_ROOT / ".." / "data" / "exams"
 

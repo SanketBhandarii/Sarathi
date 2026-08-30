@@ -21,3 +21,5 @@ pydantic-settings==2.15.0
 playwright
 imagekitio
 twilio
+argon2-cffi
+email-validator

@@ -1,10 +1,17 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 
 import { Sidebar } from "@/components/sidebar";
 import { TopBar } from "@/components/top-bar";
 import { DEMO_STUDENT, api } from "@/lib/api";
 
 import "./globals.css";
+
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata: Metadata = {
   title: "Sarathi",
@@ -23,8 +30,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const student = await loadStudent();
 
   return (
-    <html lang="en">
-      <body className="antialiased">
+    <html lang="en" className={inter.variable}>
+      <body className="font-sans antialiased">
         <div className="flex min-h-screen">
           <Sidebar
             studentName={student?.name ?? "Not connected"}

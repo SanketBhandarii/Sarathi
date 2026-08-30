@@ -3,7 +3,7 @@ from __future__ import annotations
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.routes import documents, exams, health, journal, plan, radar, students
+from app.api.routes import auth, documents, exams, health, journal, plan, radar, students
 
 app = FastAPI(
     title="Sarathi",
@@ -20,6 +20,7 @@ app.add_middleware(
 )
 
 app.include_router(health.router)
+app.include_router(auth.router)
 app.include_router(students.router)
 app.include_router(radar.router)
 app.include_router(exams.router)
