@@ -23,3 +23,4 @@ imagekitio
 twilio
 argon2-cffi
 email-validator
+dnspython

@@ -49,6 +49,9 @@ class ReasonOut(BaseModel):
 
 class RadarEntryOut(BaseModel):
     exam_name: str
+    official_title: str
+    body: str
+    body_full: str
     source_id: str
     bucket: Bucket
     headline: str

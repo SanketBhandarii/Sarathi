@@ -5,6 +5,7 @@ from datetime import date
 from pydantic import BaseModel, computed_field
 
 from app.eligibility.radar import Radar
+from app.exams.naming import name_for
 from app.eligibility.verdict import Bucket
 
 
@@ -59,7 +60,7 @@ def upcoming_deadlines(radar: Radar, today: date, within_days: int = 120) -> lis
         )
         found.append(
             UpcomingDeadline(
-                exam_name=entry.exam_name,
+                exam_name=name_for(entry.exam_name, entry.source_id).short,
                 source_id=entry.source_id,
                 label="Last date to apply",
                 due_on=entry.closing_on,

@@ -14,6 +14,7 @@ from app.language.phrases import Language
 from app.language.render import bucket_label, layer_label
 from app.eligibility.layers import LAYER_LABEL
 from app.eligibility.radar import RadarEntry, build_radar
+from app.exams.naming import name_for
 
 router = APIRouter(prefix="/students", tags=["radar"])
 
@@ -30,8 +31,12 @@ def _reason_out(reason) -> ReasonOut:
 
 
 def _entry_out(entry: RadarEntry, language: Language) -> RadarEntryOut:
+    named = name_for(entry.exam_name, entry.source_id)
     return RadarEntryOut(
-        exam_name=entry.exam_name,
+        exam_name=named.short,
+        official_title=named.full,
+        body=named.body,
+        body_full=named.body_full,
         source_id=entry.source_id,
         bucket=entry.bucket,
         headline=bucket_label(entry.bucket, language),

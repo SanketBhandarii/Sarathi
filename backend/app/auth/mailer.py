@@ -78,12 +78,12 @@ class SmtpMailer:
 
 def get_mailer() -> Mailer:
     settings = get_settings()
-    if settings.smtp_host and settings.smtp_username and settings.smtp_password:
+    if settings.smtp_host and settings.smtp_login and settings.smtp_password:
         return SmtpMailer(
             host=settings.smtp_host,
             port=settings.smtp_port,
-            username=settings.smtp_username,
+            username=settings.smtp_login,
             password=settings.smtp_password,
-            sender=settings.smtp_from or settings.smtp_username,
+            sender=settings.smtp_from or settings.smtp_login,
         )
     return ConsoleMailer(log_path=settings.notifications_path.parent / "emails.log")

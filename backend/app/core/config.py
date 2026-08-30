@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_username: str = ""
+    smtp_user: str = ""
     smtp_password: str = ""
     smtp_from: str = ""
 
@@ -43,6 +44,10 @@ class Settings(BaseSettings):
 
     notification_cache_dir: Path = BACKEND_ROOT / ".." / "data" / "notifications"
     exam_data_dir: Path = BACKEND_ROOT / ".." / "data" / "exams"
+
+    @property
+    def smtp_login(self) -> str:
+        return self.smtp_username or self.smtp_user
 
     @property
     def notifications_path(self) -> Path:

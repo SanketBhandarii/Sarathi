@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.auth import tokens
+from app.auth.hygiene import judge
 from app.auth.passwords import WeakPassword
 from app.auth.service import AuthProblem, issue_code, find_user, register, sign_in, verify_code
 from app.db.repositories import students as students_repo
@@ -75,6 +76,10 @@ def _set_cookie(response: Response, token: str) -> None:
 
 @router.post("/sign-up", status_code=201)
 def sign_up(payload: SignUpIn, db: Session = Depends(get_db)) -> dict[str, str]:
+    verdict = judge(payload.email)
+    if not verdict.looks_real:
+        raise HTTPException(status_code=422, detail=verdict.reason.capitalize() + ".")
+
     try:
         register(db, payload.email, payload.password, language=payload.language)
     except WeakPassword as error:
