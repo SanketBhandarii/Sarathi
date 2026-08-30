@@ -94,3 +94,9 @@ export const HelpIcon = ({ className = D }: P) => (
 export const QuoteIcon = ({ className = "h-3 w-3" }: P) => (
   <svg className={className} viewBox="0 0 24 24" {...s}><path d="M6 6.5h12M6 11h12M6 15.5h8" /></svg>
 );
+
+export const AlertIcon = ({ className = D }: P) => (
+  <svg className={className} viewBox="0 0 24 24" {...s}>
+    <path d="M12 4.2 21 19.5H3Z" /><path d="M12 10v4M12 16.8h.01" />
+  </svg>
+);

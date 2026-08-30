@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import (
     auth,
+    changes,
     documents,
     exams,
     health,
@@ -38,3 +39,4 @@ app.include_router(documents.router)
 app.include_router(my_documents.router)
 app.include_router(journal.router)
 app.include_router(plan.router)
+app.include_router(changes.router)

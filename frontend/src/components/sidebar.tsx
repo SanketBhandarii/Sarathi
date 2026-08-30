@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { CalendarIcon, FileIcon, GridIcon, JournalIcon, RadarIcon } from "@/components/icons";
+import { AlertIcon, CalendarIcon, FileIcon, GridIcon, JournalIcon, RadarIcon } from "@/components/icons";
 
 const LINKS = [
   { href: "/", label: "Dashboard", icon: GridIcon },
   { href: "/radar", label: "Exam Radar", icon: RadarIcon },
   { href: "/deadlines", label: "Deadlines", icon: CalendarIcon },
   { href: "/documents", label: "Documents", icon: FileIcon },
+  { href: "/changes", label: "When I was wrong", icon: AlertIcon },
   { href: "/journal", label: "Agent Journal", icon: JournalIcon },
 ];
 
