@@ -31,8 +31,8 @@ def test_health_reports_what_is_in_the_database(client):
     assert body["documents"] >= 1
 
 
-def test_student_profile_is_returned(client):
-    body = client.get("/students/1").json()
+def test_student_profile_is_returned(client, student_id):
+    body = client.get(f"/students/{student_id}").json()
     assert body["name"]
     assert body["state"]
     assert body["age_today"] > 0
@@ -42,8 +42,8 @@ def test_unknown_student_gives_404(client):
     assert client.get("/students/999999").status_code == 404
 
 
-def test_radar_returns_buckets_and_layers(client):
-    body = client.get("/students/1/radar", params={"today": "2026-08-29"}).json()
+def test_radar_returns_buckets_and_layers(client, student_id):
+    body = client.get(f"/students/{student_id}/radar", params={"today": "2026-08-29"}).json()
     assert body["total_watched"] >= 1
     assert body["counts"]
     for entry in body["entries"]:
@@ -51,8 +51,8 @@ def test_radar_returns_buckets_and_layers(client):
         assert entry["layer_label"]
 
 
-def test_radar_reasons_carry_citations_where_rules_are_known(client):
-    body = client.get("/students/1/radar", params={"today": "2026-08-29"}).json()
+def test_radar_reasons_carry_citations_where_rules_are_known(client, student_id):
+    body = client.get(f"/students/{student_id}/radar", params={"today": "2026-08-29"}).json()
     known = [e for e in body["entries"] if e["rules_known"]]
     assert known
     cited = [r for e in known for r in e["reasons"] if r.get("citation")]

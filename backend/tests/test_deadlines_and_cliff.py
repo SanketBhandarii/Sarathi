@@ -66,8 +66,8 @@ def test_cliff_message_names_the_real_closing_date():
     assert "31" in cliff.message
 
 
-def test_deadlines_endpoint_sorts_by_date_and_says_days_left(client):
-    body = client.get("/students/1/deadlines", params={"today": "2026-08-29"}).json()
+def test_deadlines_endpoint_sorts_by_date_and_says_days_left(client, student_id):
+    body = client.get(f"/students/{student_id}/deadlines", params={"today": "2026-08-29"}).json()
     assert body
     assert [d["due_on"] for d in body] == sorted(d["due_on"] for d in body)
     for item in body:
@@ -76,17 +76,17 @@ def test_deadlines_endpoint_sorts_by_date_and_says_days_left(client):
         assert item["plain_words"]
 
 
-def test_deadlines_respect_the_window(client):
+def test_deadlines_respect_the_window(client, student_id):
     narrow = client.get(
-        "/students/1/deadlines", params={"today": "2026-08-29", "within_days": 14}
+        f"/students/{student_id}/deadlines", params={"today": "2026-08-29", "within_days": 14}
     ).json()
     wide = client.get(
-        "/students/1/deadlines", params={"today": "2026-08-29", "within_days": 200}
+        f"/students/{student_id}/deadlines", params={"today": "2026-08-29", "within_days": 200}
     ).json()
     assert len(narrow) <= len(wide)
 
 
-def test_age_cliff_endpoint_returns_a_message(client):
-    body = client.get("/students/1/age-cliff", params={"today": "2026-08-29"}).json()
+def test_age_cliff_endpoint_returns_a_message(client, student_id):
+    body = client.get(f"/students/{student_id}/age-cliff", params={"today": "2026-08-29"}).json()
     assert body["message"]
     assert isinstance(body["has_warning"], bool)

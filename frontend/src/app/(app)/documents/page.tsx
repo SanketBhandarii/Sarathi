@@ -1,54 +1,50 @@
-import { DocumentMaker } from "@/components/document-maker";
-import { Card, Offline } from "@/components/ui";
-import type { DocumentSpec } from "@/lib/types";
+import { FileIcon } from "@/components/icons";
+import { BodyPicker } from "./picker";
+import { Card, Offline, PageHead } from "@/components/ui";
+import { longDate } from "@/lib/format";
+import { todayDate } from "@/lib/today";
+import type { BodyRules } from "@/components/document-maker";
 
 export const dynamic = "force-dynamic";
 
-const BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8000";
+const BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8020";
 
-async function loadSpecs(): Promise<DocumentSpec[] | null> {
+async function loadRules(): Promise<BodyRules[] | null> {
   try {
     const response = await fetch(`${BASE}/documents/specs`, { cache: "no-store" });
     if (!response.ok) return null;
-    return (await response.json()) as DocumentSpec[];
+    return (await response.json()) as BodyRules[];
   } catch {
     return null;
   }
 }
 
 export default async function DocumentsPage() {
-  const specs = await loadSpecs();
+  const rules = await loadRules();
 
-  if (!specs) {
+  if (!rules || rules.length === 0) {
     return <Offline hint="The document maker runs on the backend." />;
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-[19px] font-semibold tracking-tight text-ink">My Documents</h1>
-        <p className="mt-1 max-w-2xl text-[12.5px] leading-relaxed text-ink-soft">
-          Forms reject a photo that is one kilobyte too big. Give Sarathi the picture from your
-          phone once and it makes every file at the exact size the notification asks for.
-        </p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <PageHead date={longDate(todayDate())} greeting="My Documents" />
 
-      <Card
-        title="What IBPS PO asks for"
-      >
-        <ul className="divide-y divide-line">
-          {specs.map((spec) => (
-            <li key={spec.kind} className="flex items-center justify-between gap-3 px-4 py-2.5">
-              <span className="text-[12.5px] font-medium text-ink">{spec.label}</span>
-              <span className="text-[11.5px] tabular-nums text-ink-soft">{spec.needed}</span>
-            </li>
-          ))}
-        </ul>
+      <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
+        A form will reject a photo that is one kilobyte too big. Give each picture once and
+        Sarathi makes it the exact size that commission asks for. Every commission asks for
+        something different, so pick the one you are applying to.
+      </p>
+
+      <Card icon={<FileIcon className="h-4 w-4" />} title="Make my files">
+        <BodyPicker rules={rules} />
       </Card>
 
-      <Card title="Make my files">
-        <DocumentMaker specs={specs} />
-      </Card>
+      <p className="text-[11.5px] leading-relaxed text-ink-faint">
+        Sizes are taken from each commission&apos;s own instructions. When we have read a
+        notification directly, its sizes are used instead. Always check the notification before
+        you upload.
+      </p>
     </div>
   );
 }

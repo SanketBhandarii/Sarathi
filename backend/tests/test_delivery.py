@@ -34,39 +34,39 @@ def test_console_messenger_writes_a_line(tmp_path: Path):
     assert "hello" in log.read_text(encoding="utf-8")
 
 
-def test_a_quiet_day_sends_nothing_to_the_student():
+def test_a_quiet_day_sends_nothing_to_the_student(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
         run_nightly_check(
-            session, student_id=1, today=date(2026, 7, 15),
+            session, student_id=student_id, today=date(2026, 7, 15),
             messenger=recorder, send_to="+910000000000",
         )
     assert recorder.sent == []
 
 
-def test_a_deadline_day_actually_delivers():
+def test_a_deadline_day_actually_delivers(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
         run = run_nightly_check(
-            session, student_id=1, today=date(2026, 8, 29),
+            session, student_id=student_id, today=date(2026, 8, 29),
             messenger=recorder, send_to="+910000000000",
         )
     assert run.messages_sent >= 1
     assert len(recorder.sent) == run.messages_sent
 
 
-def test_nothing_is_delivered_when_no_number_is_given():
+def test_nothing_is_delivered_when_no_number_is_given(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
-        run_nightly_check(session, student_id=1, today=date(2026, 8, 29), messenger=recorder)
+        run_nightly_check(session, student_id=student_id, today=date(2026, 8, 29), messenger=recorder)
     assert recorder.sent == []
 
 
-def test_a_message_can_go_out_in_hindi():
+def test_a_message_can_go_out_in_hindi(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
         run_nightly_check(
-            session, student_id=1, today=date(2026, 8, 29),
+            session, student_id=student_id, today=date(2026, 8, 29),
             messenger=recorder, send_to="+910000000000", language=Language.HINDI,
         )
     assert all(m.language is Language.HINDI for m in recorder.sent)

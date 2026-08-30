@@ -54,15 +54,15 @@ def test_an_unknown_key_returns_the_key_rather_than_breaking():
     assert say("no.such.phrase", Language.HINDI) == "no.such.phrase"
 
 
-def test_radar_endpoint_answers_in_hindi(client):
+def test_radar_endpoint_answers_in_hindi(client, student_id):
     body = client.get(
-        "/students/1/radar", params={"today": "2026-08-29", "lang": "hi"}
+        f"/students/{student_id}/radar", params={"today": "2026-08-29", "lang": "hi"}
     ).json()
     assert body["language"] == "hi"
     headlines = {e["headline"] for e in body["entries"]}
     assert any(any("\u0900" <= ch <= "\u097f" for ch in h) for h in headlines)
 
 
-def test_radar_defaults_to_english(client):
-    body = client.get("/students/1/radar", params={"today": "2026-08-29"}).json()
+def test_radar_defaults_to_english(client, student_id):
+    body = client.get(f"/students/{student_id}/radar", params={"today": "2026-08-29"}).json()
     assert body["language"] == "en"

@@ -9,7 +9,8 @@ from app.api.current_user import current_user
 from app.db.models import User
 from app.documents.maker import CannotMeetSpec, make_document
 from app.documents.storage import StoredDocument, get_document_store
-from app.documents.spec import IBPS_PO_SPECS, KIND_LABEL, DocumentKind, DocumentSpec
+from app.documents.known_specs import every_body
+from app.documents.spec import KIND_LABEL, DocumentKind, DocumentSpec
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -36,19 +37,37 @@ class SpecOut(BaseModel):
     needed: str
 
 
-@router.get("/specs", response_model=list[SpecOut])
-def read_specs() -> list[SpecOut]:
+class BodyRulesOut(BaseModel):
+    source_id: str
+    body: str
+    specs: list[SpecOut]
+    warnings: list[str]
+    checked_against: str
+
+
+def _spec_out(spec: DocumentSpec) -> SpecOut:
+    return SpecOut(
+        kind=spec.kind,
+        label=KIND_LABEL[spec.kind],
+        width_px=spec.width_px,
+        height_px=spec.height_px,
+        min_kb=spec.min_kb,
+        max_kb=spec.max_kb,
+        needed=spec.describe(),
+    )
+
+
+@router.get("/specs", response_model=list[BodyRulesOut])
+def read_specs() -> list[BodyRulesOut]:
     return [
-        SpecOut(
-            kind=spec.kind,
-            label=KIND_LABEL[spec.kind],
-            width_px=spec.width_px,
-            height_px=spec.height_px,
-            min_kb=spec.min_kb,
-            max_kb=spec.max_kb,
-            needed=spec.describe(),
+        BodyRulesOut(
+            source_id=rules.source_id,
+            body=rules.body,
+            specs=[_spec_out(spec) for spec in rules.specs],
+            warnings=rules.warnings,
+            checked_against=rules.checked_against,
         )
-        for spec in IBPS_PO_SPECS
+        for rules in every_body()
     ]
 
 

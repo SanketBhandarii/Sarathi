@@ -101,8 +101,8 @@ def test_form_pack_warns_about_cgpa_versus_percentage():
     assert "CGPA" in (marks.note or "")
 
 
-def test_form_pack_endpoint(client):
+def test_form_pack_endpoint(client, student_id):
     body = client.get(
-        "/students/1/form-pack", params={"exam_name": "Test", "today": "2026-08-30"}
+        f"/students/{student_id}/form-pack", params={"exam_name": "Test", "today": "2026-08-30"}
     ).json()
     assert body["ready_count"] >= 10
