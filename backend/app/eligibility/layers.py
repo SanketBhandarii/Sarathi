@@ -16,11 +16,11 @@ class Layer(StrEnum):
 
 
 LAYER_LABEL: dict[Layer, str] = {
-    Layer.CENTRAL: "Central government - open to every Indian",
+    Layer.CENTRAL: "Central government, open to every Indian",
     Layer.YOUR_STATE: "Your state",
     Layer.YOUR_CITY: "Your city and district",
     Layer.OPEN_TO_ALL_STATES: "Other states, open to everyone",
-    Layer.ANOTHER_STATE: "Another state - needs their domicile",
+    Layer.ANOTHER_STATE: "Another state, needs their domicile",
 }
 
 

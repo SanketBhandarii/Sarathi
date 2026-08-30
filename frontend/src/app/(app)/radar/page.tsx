@@ -39,7 +39,7 @@ export default async function RadarPage() {
       <div>
         <h1 className="text-[19px] font-semibold tracking-tight text-ink">Exam Radar</h1>
         <p className="mt-1 text-[12.5px] text-ink-soft">
-          Every exam Sarathi watches, in four layers. Nothing is hidden — exams you cannot take
+          Every exam Sarathi watches, in four layers. Nothing is hidden , exams you cannot take
           are shown too, with the reason.
         </p>
       </div>

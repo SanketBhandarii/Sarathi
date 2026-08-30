@@ -36,7 +36,7 @@ function Details({ entry }: { entry: RadarEntry }) {
                 <p className="mt-1 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-ink-faint">
                   <QuoteIcon className="mt-[3px] h-3 w-3 shrink-0" />
                   <span>
-                    <span className="font-medium text-ink-soft">page {reason.citation.page}</span> — “
+                    <span className="font-medium text-ink-soft">page {reason.citation.page}</span> , “
                     {reason.citation.quote.slice(0, 155)}
                     {reason.citation.quote.length > 155 ? "…" : ""}”
                   </span>

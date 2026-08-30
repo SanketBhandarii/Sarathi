@@ -34,8 +34,8 @@ PHRASES: dict[str, dict[Language, str]] = {
         Language.HINDI: "हम इसकी जाँच नहीं कर सके",
     },
     "layer.central": {
-        Language.ENGLISH: "Central government - open to every Indian",
-        Language.HINDI: "केंद्र सरकार - हर भारतीय के लिए खुला",
+        Language.ENGLISH: "Central government, open to every Indian",
+        Language.HINDI: "केंद्र सरकार, हर भारतीय के लिए खुला",
     },
     "layer.your_state": {
         Language.ENGLISH: "Your state",
@@ -50,8 +50,8 @@ PHRASES: dict[str, dict[Language, str]] = {
         Language.HINDI: "दूसरे राज्य, सबके लिए खुले",
     },
     "layer.another_state": {
-        Language.ENGLISH: "Another state - needs their domicile",
-        Language.HINDI: "दूसरा राज्य - वहाँ का निवास प्रमाण चाहिए",
+        Language.ENGLISH: "Another state, needs their domicile",
+        Language.HINDI: "दूसरा राज्य, वहाँ का निवास प्रमाण चाहिए",
     },
     "relaxation.extra_years": {
         Language.ENGLISH: "You get {years} extra years because you are {category}.",

@@ -53,7 +53,7 @@ KNOWN: list[tuple[str, str]] = [
 ADVT_PATTERN = re.compile(r"advt?\.?\s*no\.?\s*([0-9]+)\s*[/\-]\s*([0-9]{4})", re.IGNORECASE)
 ADVERTISEMENT_PATTERN = re.compile(r"advertisement\s*no\.?\s*([0-9]+)\s*[\-/]\s*([0-9]{4})", re.IGNORECASE)
 YEAR_PATTERN = re.compile(r"\b(20[2-4][0-9])\b")
-NOISE = re.compile(r"^(advt?\.?\s*no\.?\s*[0-9/\-]+\s*[\-–]?\s*)", re.IGNORECASE)
+NOISE = re.compile(r"^(advt?\.?\s*no\.?\s*[0-9/\-]+\s*[\- to ]?\s*)", re.IGNORECASE)
 
 
 class ExamName(BaseModel):
@@ -78,7 +78,7 @@ def _advertisement_number(title: str) -> str | None:
 
 
 def _tidy(title: str) -> str:
-    cleaned = NOISE.sub("", " ".join(title.split())).strip(" -–—:")
+    cleaned = NOISE.sub("", " ".join(title.split())).strip(" -:,")
     return cleaned or title.strip()
 
 

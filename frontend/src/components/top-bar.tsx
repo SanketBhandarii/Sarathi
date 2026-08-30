@@ -48,7 +48,7 @@ export function TopBar({ student, hasNews }: { student: Student | null; hasNews:
         </button>
 
         <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-[11.5px] font-semibold text-white">
-          {student ? initials(student.name) : "—"}
+          {student ? initials(student.name) : ","}
         </div>
       </div>
     </header>

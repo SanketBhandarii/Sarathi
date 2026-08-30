@@ -6,11 +6,13 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy.orm import Session
 
+from app.api.current_user import current_user
 from app.api.deps import get_db
 from app.auth import tokens
 from app.auth.hygiene import judge
 from app.auth.passwords import WeakPassword
 from app.auth.service import AuthProblem, issue_code, find_user, register, sign_in, verify_code
+from app.db.models import User
 from app.db.repositories import students as students_repo
 from app.language.phrases import Language
 from app.student.profile import Category, Education, Gender, StudentProfile
@@ -133,3 +135,51 @@ def login(payload: SignInIn, response: Response, db: Session = Depends(get_db)) 
 def logout(response: Response) -> dict[str, str]:
     response.delete_cookie(SESSION_COOKIE)
     return {"message": "Signed out."}
+
+
+class MeOut(BaseModel):
+    email: str
+    student_id: int | None
+    has_profile: bool
+    name: str | None = None
+
+
+@router.get("/me", response_model=MeOut)
+def me(user: User = Depends(current_user), db: Session = Depends(get_db)) -> MeOut:
+    student = students_repo.get_student(db, user.student_id) if user.student_id else None
+    return MeOut(
+        email=user.email,
+        student_id=user.student_id,
+        has_profile=student is not None,
+        name=student.name if student else None,
+    )
+
+
+@router.post("/profile", response_model=MeOut, status_code=201)
+def save_profile(
+    payload: ProfileIn,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> MeOut:
+    profile = StudentProfile(
+        name=payload.name,
+        date_of_birth=payload.date_of_birth,
+        category=payload.category,
+        gender=payload.gender,
+        is_pwbd=payload.is_pwbd,
+        is_ex_serviceman=payload.is_ex_serviceman,
+        state=payload.state,
+        district=payload.district,
+        education=Education(
+            degree=payload.degree,
+            stream=payload.stream,
+            completed_year=payload.completed_year,
+            percentage=payload.percentage,
+            is_completed=payload.is_completed,
+        ),
+    )
+    row = students_repo.save_profile(db, profile, student_id=user.student_id)
+    db.flush()
+    user.student_id = row.id
+    db.flush()
+    return MeOut(email=user.email, student_id=row.id, has_profile=True, name=row.name)

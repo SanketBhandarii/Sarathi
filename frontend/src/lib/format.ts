@@ -18,12 +18,12 @@ export const BODY_TONE: Record<string, string> = {
 };
 
 export function rupees(amount: number | null | undefined): string {
-  if (amount === null || amount === undefined) return "—";
+  if (amount === null || amount === undefined) return ",";
   return `₹${Math.round(amount).toLocaleString("en-IN")}`;
 }
 
 export function shortDate(iso: string | null): string {
-  if (!iso) return "—";
+  if (!iso) return ",";
   return new Date(iso).toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
