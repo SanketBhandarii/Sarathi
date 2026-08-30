@@ -14,6 +14,49 @@ export interface Me {
   name: string | null;
 }
 
+
+interface FieldProblem {
+  loc?: (string | number)[];
+  msg?: string;
+}
+
+const FIELD_NAMES: Record<string, string> = {
+  name: "your name",
+  date_of_birth: "your date of birth",
+  district: "your district",
+  state: "your state",
+  marks: "the marks",
+  cgpa_scale: "the CGPA scale",
+  passed_year: "the year",
+  current_semester: "the semester",
+  board_or_university: "the board or university",
+  email: "your email",
+  password: "your password",
+};
+
+function describeField(problem: FieldProblem): string {
+  const parts = (problem.loc ?? []).filter((part) => typeof part === "string");
+  const last = parts[parts.length - 1] as string | undefined;
+  return last ? (FIELD_NAMES[last] ?? last.replace(/_/g, " ")) : "one of the fields";
+}
+
+export function readProblem(data: unknown): string {
+  if (typeof data === "string") return data;
+
+  const detail = (data as { detail?: unknown })?.detail;
+  if (typeof detail === "string") return detail;
+
+  if (Array.isArray(detail) && detail.length > 0) {
+    const fields = Array.from(new Set(detail.map((item) => describeField(item as FieldProblem))));
+    if (fields.length === 1) {
+      return `Please check ${fields[0]}.`;
+    }
+    return `Please check ${fields.slice(0, -1).join(", ")} and ${fields[fields.length - 1]}.`;
+  }
+
+  return "Something went wrong. Please try again.";
+}
+
 async function post<T>(path: string, body: unknown, token?: string): Promise<T> {
   const response = await fetch(`${BASE}${path}`, {
     method: "POST",
@@ -27,7 +70,7 @@ async function post<T>(path: string, body: unknown, token?: string): Promise<T> 
 
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
-    throw new Error(data.detail ?? "Something went wrong. Please try again.");
+    throw new Error(readProblem(data));
   }
   return data as T;
 }

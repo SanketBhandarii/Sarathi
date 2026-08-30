@@ -39,6 +39,18 @@ const GENDERS = [
 
 const selectClass = `${inputClass} appearance-none`;
 
+function numberOrNull(value: string): number | null {
+  const trimmed = value.trim();
+  if (trimmed === "") return null;
+  const parsed = Number(trimmed);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function text(value: string): string | null {
+  const trimmed = value.trim();
+  return trimmed === "" ? null : trimmed;
+}
+
 export function ProfileForm({ token }: { token: string }) {
   const router = useRouter();
   const [problem, setProblem] = useState<string | null>(null);
@@ -84,15 +96,15 @@ export function ProfileForm({ token }: { token: string }) {
       .filter((entry) => entry.marks || entry.passed_year || entry.board_or_university)
       .map((entry) => ({
         level: entry.level,
-        board_or_university: entry.board_or_university || null,
-        college: entry.college || null,
-        stream: entry.stream || null,
+        board_or_university: text(entry.board_or_university),
+        college: text(entry.college),
+        stream: text(entry.stream),
         marks_kind: entry.marks_kind,
-        marks: entry.marks ? Number(entry.marks) : null,
-        cgpa_scale: entry.marks_kind === "cgpa" ? Number(entry.cgpa_scale) || 10 : null,
-        passed_year: entry.passed_year ? Number(entry.passed_year) : null,
+        marks: numberOrNull(entry.marks),
+        cgpa_scale: entry.marks_kind === "cgpa" ? (numberOrNull(entry.cgpa_scale) ?? 10) : null,
+        passed_year: numberOrNull(entry.passed_year),
         is_completed: entry.is_completed,
-        current_semester: entry.current_semester ? Number(entry.current_semester) : null,
+        current_semester: numberOrNull(entry.current_semester),
       }));
 
     if (qualifications.length === 0) {
