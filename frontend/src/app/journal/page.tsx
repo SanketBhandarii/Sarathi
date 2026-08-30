@@ -1,4 +1,4 @@
-import { Offline, Panel } from "@/components/panel";
+import { Card, Offline } from "@/components/ui";
 import { DEMO_STUDENT, api } from "@/lib/api";
 import type { JournalRun } from "@/lib/types";
 
@@ -111,7 +111,7 @@ export default async function JournalPage() {
         </div>
       </div>
 
-      <Panel title="Every run" subtitle="Newest first.">
+      <Card title="Every run">
         {runs.length === 0 ? (
           <p className="px-4 py-8 text-center text-[13px] text-ink-soft">
             No runs recorded yet.
@@ -123,7 +123,7 @@ export default async function JournalPage() {
             ))}
           </ul>
         )}
-      </Panel>
+      </Card>
     </div>
   );
 }

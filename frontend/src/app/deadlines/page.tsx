@@ -1,13 +1,14 @@
-import { Offline, Panel } from "@/components/panel";
+import { CalendarIcon, ClockIcon } from "@/components/icons";
+import { Card, Offline, PageHead } from "@/components/ui";
 import { DEMO_STUDENT, DEMO_TODAY, api } from "@/lib/api";
-import { shortDate } from "@/lib/format";
+import { longDate, shortDate } from "@/lib/format";
 import type { AgeCliff, Deadline } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
 const URGENCY_TONE: Record<Deadline["urgency"], string> = {
   today: "bg-stop-soft text-stop",
-  "this week": "bg-wait-soft text-wait",
+  "this week": "bg-sun-soft text-sun",
   "this month": "bg-cold-soft text-cold",
   later: "bg-mute-soft text-mute",
 };
@@ -25,21 +26,21 @@ export default async function DeadlinesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <div>
-        <h1 className="text-[19px] font-semibold tracking-tight text-ink">Deadlines</h1>
-        <p className="mt-1 text-[12.5px] text-ink-soft">
-          Dates taken from the official notification, not from a job website.
-        </p>
-      </div>
+    <div className="flex flex-col gap-6">
+      <PageHead date={longDate(new Date(DEMO_TODAY))} greeting="Deadlines" />
+
+      <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
+        Every date here was read out of the commission&apos;s own notification, not copied from a
+        job website.
+      </p>
 
       {cliff.has_warning ? (
-        <div className="rounded-card border border-wait/25 bg-wait-soft px-4 py-3">
-          <p className="text-[12px] font-medium uppercase tracking-wide text-wait/80">Age limit</p>
-          <p className="mt-1 text-[13px] font-medium text-wait">{cliff.message}</p>
+        <div className="rounded-card border border-sun/25 bg-sun-soft px-5 py-4">
+          <p className="text-[11.5px] font-medium uppercase tracking-wide text-sun/80">Age limit</p>
+          <p className="mt-1 text-[14px] font-medium text-sun">{cliff.message}</p>
           <ul className="mt-2 flex flex-col gap-1">
             {cliff.exams_closing.map((exam) => (
-              <li key={exam.exam_name} className="text-[11.5px] text-wait">
+              <li key={exam.exam_name} className="text-[12px] text-sun">
                 · {exam.exam_name} — your limit is {exam.limit_for_you}, closes{" "}
                 {shortDate(exam.closes_on)}
               </li>
@@ -48,46 +49,43 @@ export default async function DeadlinesPage() {
         </div>
       ) : null}
 
-      <Panel
-        title="Coming up"
-        subtitle={
-          deadlines.length === 0
-            ? "Nothing closing in the next few months."
-            : `${deadlines.length} date${deadlines.length === 1 ? "" : "s"} to keep.`
-        }
-      >
+      <Card icon={<CalendarIcon className="h-4 w-4" />} title="Coming up">
         {deadlines.length === 0 ? (
-          <p className="px-4 py-8 text-center text-[13px] text-ink-soft">
+          <p className="px-5 py-10 text-center text-[13px] text-ink-soft">
             No deadline needs you right now.
           </p>
         ) : (
-          <ul className="divide-y divide-line">
+          <ul className="border-t border-line">
             {deadlines.map((deadline) => (
-              <li key={`${deadline.source_id}-${deadline.exam_name}`} className="px-4 py-3.5">
-                <div className="flex flex-wrap items-center gap-2">
+              <li
+                key={`${deadline.source_id}-${deadline.exam_name}`}
+                className="border-b border-line px-5 py-4 last:border-0"
+              >
+                <div className="flex flex-wrap items-center gap-2.5">
                   <span
-                    className={`rounded-pill px-2.5 py-1 text-[11px] font-medium ${URGENCY_TONE[deadline.urgency]}`}
+                    className={`inline-flex items-center gap-1.5 rounded-[7px] px-2.5 py-1 text-[12px] font-medium ${URGENCY_TONE[deadline.urgency]}`}
                   >
+                    <ClockIcon className="h-3.5 w-3.5" />
                     {deadline.days_left} days left
                   </span>
-                  <p className="text-[13px] font-medium text-ink">{deadline.exam_name}</p>
+                  <p className="text-[13.5px] font-medium text-ink">{deadline.exam_name}</p>
                   {deadline.you_can_apply ? (
-                    <span className="rounded-pill bg-good-soft px-2 py-0.5 text-[10.5px] font-medium text-good">
+                    <span className="rounded-[6px] bg-good-soft px-2 py-0.5 text-[11px] font-medium text-good">
                       you qualify
                     </span>
                   ) : null}
                 </div>
-                <p className="mt-1.5 text-[12px] text-ink-soft">{deadline.plain_words}</p>
+                <p className="mt-2 text-[12.5px] text-ink-soft">{deadline.plain_words}</p>
                 {deadline.citation_quote ? (
-                  <p className="mt-1 text-[11px] text-ink-faint">
-                    page {deadline.citation_page} — “{deadline.citation_quote.slice(0, 120)}”
+                  <p className="mt-1 text-[11.5px] text-ink-faint">
+                    page {deadline.citation_page} — “{deadline.citation_quote.slice(0, 130)}”
                   </p>
                 ) : null}
               </li>
             ))}
           </ul>
         )}
-      </Panel>
+      </Card>
     </div>
   );
 }

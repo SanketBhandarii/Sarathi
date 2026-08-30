@@ -1,5 +1,5 @@
 import { DocumentMaker } from "@/components/document-maker";
-import { Offline, Panel } from "@/components/panel";
+import { Card, Offline } from "@/components/ui";
 import type { DocumentSpec } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -33,9 +33,8 @@ export default async function DocumentsPage() {
         </p>
       </div>
 
-      <Panel
+      <Card
         title="What IBPS PO asks for"
-        subtitle="These sizes were read out of the notification pdf, not typed in by us."
       >
         <ul className="divide-y divide-line">
           {specs.map((spec) => (
@@ -45,11 +44,11 @@ export default async function DocumentsPage() {
             </li>
           ))}
         </ul>
-      </Panel>
+      </Card>
 
-      <Panel title="Make my files" subtitle="Nothing is uploaded anywhere until you choose to save it.">
+      <Card title="Make my files">
         <DocumentMaker specs={specs} />
-      </Panel>
+      </Card>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { ExamTable } from "@/components/exam-table";
-import { Offline, Panel } from "@/components/panel";
+import { Card, Offline } from "@/components/ui";
 import { DEMO_STUDENT, DEMO_TODAY, api } from "@/lib/api";
 import type { Layer, Radar } from "@/lib/types";
 
@@ -45,10 +45,9 @@ export default async function RadarPage() {
       </div>
 
       {layers.map(({ layer, entries }) => (
-        <Panel
+        <Card
           key={layer}
           title={entries[0].layer_label}
-          subtitle={LAYER_NOTE[layer]}
           action={
             <span className="rounded-pill bg-brand-soft px-2.5 py-1 text-[11px] font-medium text-ink-soft">
               {entries.length}
@@ -56,7 +55,7 @@ export default async function RadarPage() {
           }
         >
           <ExamTable entries={entries} />
-        </Panel>
+        </Card>
       ))}
     </div>
   );

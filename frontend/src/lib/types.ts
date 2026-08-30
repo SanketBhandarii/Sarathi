@@ -29,6 +29,9 @@ export interface Reason {
 
 export interface RadarEntry {
   exam_name: string;
+  official_title: string;
+  body: string;
+  body_full: string;
   source_id: string;
   bucket: Bucket;
   headline: string;

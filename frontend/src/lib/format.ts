@@ -3,27 +3,18 @@ import type { Bucket } from "@/lib/types";
 export const BUCKET_TONE: Record<Bucket, string> = {
   apply_now: "bg-good-soft text-good",
   coming_soon: "bg-cold-soft text-cold",
-  not_yet: "bg-wait-soft text-wait",
+  not_yet: "bg-sun-soft text-sun",
   closed_for_now: "bg-mute-soft text-mute",
   not_for_you: "bg-stop-soft text-stop",
-  unknown: "bg-mute-soft text-mute",
+  unknown: "bg-wait-soft text-wait",
 };
 
-export const BUCKET_ORDER: Bucket[] = [
-  "apply_now",
-  "coming_soon",
-  "not_yet",
-  "closed_for_now",
-  "unknown",
-  "not_for_you",
-];
-
-export const SOURCE_NAME: Record<string, string> = {
-  ssc: "Staff Selection Commission",
-  upsc: "Union Public Service Commission",
-  ibps: "Banking (IBPS)",
-  mpsc: "Maharashtra PSC",
-  bmc: "Mumbai (BMC)",
+export const BODY_TONE: Record<string, string> = {
+  ssc: "bg-[#7c5cff]",
+  upsc: "bg-[#2563eb]",
+  ibps: "bg-[#33c481]",
+  mpsc: "bg-[#f5a524]",
+  bmc: "bg-[#e879c8]",
 };
 
 export function rupees(amount: number | null | undefined): string {
@@ -40,6 +31,14 @@ export function shortDate(iso: string | null): string {
   });
 }
 
+export function longDate(date: Date): string {
+  return date.toLocaleDateString("en-IN", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  });
+}
+
 export function initials(name: string): string {
   return name
     .split(" ")
@@ -47,4 +46,10 @@ export function initials(name: string): string {
     .slice(0, 2)
     .map((part) => part[0]?.toUpperCase() ?? "")
     .join("");
+}
+
+export function greetingFor(hour: number): string {
+  if (hour < 12) return "Good Morning";
+  if (hour < 17) return "Good Afternoon";
+  return "Good Evening";
 }
