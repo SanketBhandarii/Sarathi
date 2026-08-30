@@ -1,6 +1,8 @@
-import { CheckCircleIcon, ClockIcon, RadarIcon, ShareIcon, PlusIcon, ListIcon, JournalIcon, CalendarIcon } from "@/components/icons";
+import { CalendarIcon, CheckCircleIcon, ClockIcon, JournalIcon, ListIcon, RadarIcon } from "@/components/icons";
 import { ExamTable } from "@/components/exam-table";
-import { Card, GhostButton, Offline, PageHead, PillButton, StatStrip } from "@/components/ui";
+import Link from "next/link";
+
+import { Card, Offline, PageHead, StatStrip } from "@/components/ui";
 import { api } from "@/lib/api";
 import { currentUser } from "@/lib/session";
 import { todayDate, todayIso } from "@/lib/today";
@@ -57,12 +59,6 @@ export default async function DashboardPage() {
       <PageHead
         date={longDate(todayDate())}
         greeting={`${greetingFor(todayDate().getHours() || 19)}! ${radar.student_name.split(" ")[0]},`}
-        actions={
-          <>
-            <GhostButton icon={<ShareIcon />}>Share</GhostButton>
-            <GhostButton icon={<PlusIcon className="h-[15px] w-[15px]" />}>Add exam</GhostButton>
-          </>
-        }
       />
 
       <StatStrip
@@ -99,8 +95,14 @@ export default async function DashboardPage() {
       <Card
         icon={<ListIcon />}
         title="Open for you"
-        chip="This month"
-        action={<PillButton>See all</PillButton>}
+        action={
+          <Link
+            href="/radar"
+            className="rounded-pill bg-line-soft px-3.5 py-1.5 text-[12.5px] font-medium text-ink-soft transition-colors hover:bg-line hover:text-ink"
+          >
+            See all {radar.total_watched}
+          </Link>
+        }
       >
         <ExamTable entries={canApply} />
       </Card>

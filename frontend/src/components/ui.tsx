@@ -22,24 +22,6 @@ export function PageHead({
   );
 }
 
-export function GhostButton({
-  children,
-  icon,
-}: {
-  children: React.ReactNode;
-  icon?: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      className="flex items-center gap-2 rounded-[9px] border border-line bg-shell px-3.5 py-2 text-[13px] font-medium text-ink transition-colors hover:bg-line-soft"
-    >
-      {icon}
-      {children}
-    </button>
-  );
-}
-
 export function StatStrip({
   items,
 }: {
@@ -92,17 +74,6 @@ export function Card({
       </div>
       {children}
     </section>
-  );
-}
-
-export function PillButton({ children }: { children: React.ReactNode }) {
-  return (
-    <button
-      type="button"
-      className="rounded-pill bg-line-soft px-3.5 py-1.5 text-[12.5px] font-medium text-ink-soft transition-colors hover:bg-line hover:text-ink"
-    >
-      {children}
-    </button>
   );
 }
 

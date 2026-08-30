@@ -42,7 +42,7 @@ function VerifyForm() {
 
   return (
     <AuthShell
-      step="Step 2 of 3"
+      step="Step 2 of 4"
       title="Type your code"
       hint={`We sent six digits to ${email || "your email"}. It works for ten minutes.`}
       footer={

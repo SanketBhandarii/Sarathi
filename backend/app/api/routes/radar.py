@@ -8,6 +8,9 @@ from sqlalchemy.orm import Session
 from app.api.deps import get_db, get_student_or_404
 from app.api.schemas import CitationOut, RadarEntryOut, RadarOut, ReasonOut
 from app.db.models import Student
+from sqlalchemy import select
+
+from app.db.models import SourceDocument
 from app.db.repositories import documents as docs_repo
 from app.db.repositories import students as students_repo
 from app.language.phrases import Language
@@ -30,7 +33,10 @@ def _reason_out(reason) -> ReasonOut:
     )
 
 
-def _entry_out(entry: RadarEntry, language: Language) -> RadarEntryOut:
+def _entry_out(
+    entry: RadarEntry, language: Language, links: dict[str, tuple[str, str]]
+) -> RadarEntryOut:
+    link = links.get(entry.exam_name)
     named = name_for(entry.exam_name, entry.source_id)
     return RadarEntryOut(
         exam_name=named.short,
@@ -44,6 +50,8 @@ def _entry_out(entry: RadarEntry, language: Language) -> RadarEntryOut:
         layer_label=layer_label(entry.layer, language),
         reasons=[_reason_out(r) for r in entry.reasons],
         rules_known=entry.rules_known,
+        official_url=link[0] if link else None,
+        document_title=link[1] if link else None,
         closing_text=entry.closing_text,
         closing_on=entry.closing_on,
         fee_payable=entry.fee_payable,
@@ -59,6 +67,8 @@ def read_radar(
     lang: Language = Query(default=Language.ENGLISH),
 ) -> RadarOut:
     profile = students_repo.to_profile(student)
+    documents = db.scalars(select(SourceDocument)).all()
+    links = {d.title: (d.origin_url, d.title) for d in documents}
     radar = build_radar(
         profile,
         docs_repo.all_rules(db),
@@ -71,5 +81,5 @@ def read_radar(
         generated_on=radar.generated_on,
         total_watched=len(radar.entries),
         counts={b.value: n for b, n in radar.counts().items() if n},
-        entries=[_entry_out(e, lang) for e in radar.entries],
+        entries=[_entry_out(e, lang, links) for e in radar.entries],
     )

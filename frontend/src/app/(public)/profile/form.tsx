@@ -115,7 +115,7 @@ export function ProfileForm({ token }: { token: string }) {
 
     try {
       await auth.saveProfile({ ...about, qualifications }, token);
-      router.push("/dashboard");
+      router.push("/photos");
       router.refresh();
     } catch (error) {
       setProblem(error instanceof Error ? error.message : "Please try again.");
@@ -129,7 +129,7 @@ export function ProfileForm({ token }: { token: string }) {
 
   return (
     <AuthShell
-      step="Step 3 of 3"
+      step="Step 3 of 4"
       title="Tell Sarathi about you"
       hint="Fill this once. Every verdict, every deadline and every document is worked out from these details."
     >

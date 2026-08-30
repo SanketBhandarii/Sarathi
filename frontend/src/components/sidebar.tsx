@@ -3,16 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import {
-  CalendarIcon,
-  FileIcon,
-  GridIcon,
-  HelpIcon,
-  JournalIcon,
-  PlusIcon,
-  RadarIcon,
-  SettingsIcon,
-} from "@/components/icons";
+import { CalendarIcon, FileIcon, GridIcon, JournalIcon, RadarIcon } from "@/components/icons";
 
 const LINKS = [
   { href: "/", label: "Dashboard", icon: GridIcon },
@@ -28,7 +19,7 @@ const LAYER_DOTS = [
   { label: "Nagpur district", tone: "bg-[#f5a524]" },
 ];
 
-export function Sidebar({ unread }: { unread: number }) {
+export function Sidebar() {
   const pathname = usePathname();
 
   return (
@@ -63,12 +54,7 @@ export function Sidebar({ unread }: { unread: number }) {
       <div className="mx-4 my-5 border-t border-line" />
 
       <div className="px-4">
-        <div className="flex items-center justify-between px-3.5 pb-2">
-          <span className="text-[13.5px] font-medium text-ink">Your layers</span>
-          <button type="button" aria-label="About layers" className="text-ink-faint hover:text-ink">
-            <PlusIcon className="h-4 w-4" />
-          </button>
-        </div>
+        <p className="px-3.5 pb-2 text-[13.5px] font-medium text-ink">Your layers</p>
         <ul className="flex flex-col gap-0.5">
           {LAYER_DOTS.map(({ label, tone }) => (
             <li
@@ -82,27 +68,15 @@ export function Sidebar({ unread }: { unread: number }) {
         </ul>
       </div>
 
-      <div className="mt-auto flex flex-col gap-1 px-4 pb-6">
-        <button
-          type="button"
-          className="flex items-center gap-3 rounded-[9px] px-3.5 py-2.5 text-[13.5px] text-ink-soft transition-colors hover:bg-line-soft hover:text-ink"
-        >
-          <SettingsIcon />
-          Settings
-        </button>
-        <button
-          type="button"
-          className="flex items-center gap-3 rounded-[9px] px-3.5 py-2.5 text-[13.5px] text-ink-soft transition-colors hover:bg-line-soft hover:text-ink"
-        >
-          <HelpIcon />
-          Help
-          {unread > 0 ? (
-            <span className="ml-auto rounded-[6px] bg-good-soft px-1.5 py-0.5 text-[11px] font-medium text-good">
-              {unread}
-            </span>
-          ) : null}
-        </button>
+      <div className="mt-auto px-4 pb-6">
+        <div className="rounded-card border border-line bg-page px-3.5 py-3">
+          <p className="text-[12px] font-medium text-ink">Sarathi checks every night</p>
+          <p className="mt-1 text-[11.5px] leading-relaxed text-ink-soft">
+            It only writes to you when a date or a rule actually needs you.
+          </p>
+        </div>
       </div>
+
     </aside>
   );
 }

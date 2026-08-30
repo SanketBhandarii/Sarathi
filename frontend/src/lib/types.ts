@@ -39,6 +39,8 @@ export interface RadarEntry {
   layer_label: string;
   reasons: Reason[];
   rules_known: boolean;
+  official_url: string | null;
+  document_title: string | null;
   closing_text: string | null;
   closing_on: string | null;
   fee_payable: number | null;

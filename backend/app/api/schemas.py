@@ -59,6 +59,8 @@ class RadarEntryOut(BaseModel):
     layer_label: str
     reasons: list[ReasonOut] = []
     rules_known: bool
+    official_url: str | None = None
+    document_title: str | None = None
     closing_text: str | None = None
     closing_on: date | None = None
     fee_payable: float | None = None

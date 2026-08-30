@@ -36,7 +36,7 @@ function Details({ entry }: { entry: RadarEntry }) {
                 <p className="mt-1 flex items-start gap-1.5 text-[11.5px] leading-relaxed text-ink-faint">
                   <QuoteIcon className="mt-[3px] h-3 w-3 shrink-0" />
                   <span>
-                    <span className="font-medium text-ink-soft">page {reason.citation.page}</span> , “
+                    <span className="font-medium text-ink-soft">page {reason.citation.page}</span>: “
                     {reason.citation.quote.slice(0, 155)}
                     {reason.citation.quote.length > 155 ? "…" : ""}”
                   </span>
@@ -48,14 +48,30 @@ function Details({ entry }: { entry: RadarEntry }) {
       )}
 
       {entry.unchecked.length > 0 ? (
-        <div className="mt-3 rounded-[9px] border border-sun/20 bg-sun-soft px-3 py-2">
-          <p className="text-[11.5px] font-medium text-sun">We could not check everything here</p>
+        <div className="mt-3 rounded-[9px] border border-sun/20 bg-sun-soft px-3.5 py-3">
+          <p className="text-[12px] font-medium text-sun">Read this one yourself</p>
           {entry.unchecked.map((item) => (
-            <p key={item} className="mt-0.5 text-[11.5px] text-sun">
-              · {item}
+            <p key={item} className="mt-1 text-[11.5px] leading-relaxed text-sun">
+              {item}
             </p>
           ))}
+          <p className="mt-1.5 text-[11.5px] leading-relaxed text-sun">
+            We will not guess at rules we cannot read. Open the commission&apos;s own notification
+            and check your eligibility there.
+          </p>
         </div>
+      ) : null}
+
+      {entry.official_url ? (
+        <a
+          href={entry.official_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 inline-flex items-center gap-1.5 rounded-[9px] border border-line bg-shell px-3.5 py-2 text-[12.5px] font-medium text-ink transition-colors hover:border-accent hover:text-accent"
+        >
+          Open the official notification
+          <ChevronIcon className="h-3.5 w-3.5" />
+        </a>
       ) : null}
     </div>
   );

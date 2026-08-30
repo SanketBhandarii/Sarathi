@@ -29,9 +29,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="min-h-screen p-0 lg:p-6">
       <div className="flex min-h-screen overflow-hidden border-line bg-shell lg:min-h-[calc(100vh-3rem)] lg:rounded-shell lg:border lg:shadow-[0_1px_3px_rgba(16,17,20,0.06)]">
-        <Sidebar unread={urgent} />
+        <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-          <TopBar student={student} hasNews={urgent > 0} />
+          <TopBar student={student} studentId={studentId} urgent={urgent} />
           <main className="min-w-0 flex-1 overflow-x-hidden px-6 pb-10 pt-6">{children}</main>
         </div>
       </div>

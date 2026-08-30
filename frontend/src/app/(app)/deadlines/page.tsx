@@ -48,7 +48,7 @@ export default async function DeadlinesPage() {
           <ul className="mt-2 flex flex-col gap-1">
             {cliff.exams_closing.map((exam) => (
               <li key={exam.exam_name} className="text-[12px] text-sun">
-                · {exam.exam_name} , your limit is {exam.limit_for_you}, closes{" "}
+                · {exam.exam_name}. Your limit is {exam.limit_for_you}, closes{" "}
                 {shortDate(exam.closes_on)}
               </li>
             ))}
@@ -85,7 +85,7 @@ export default async function DeadlinesPage() {
                 <p className="mt-2 text-[12.5px] text-ink-soft">{deadline.plain_words}</p>
                 {deadline.citation_quote ? (
                   <p className="mt-1 text-[11.5px] text-ink-faint">
-                    page {deadline.citation_page} , “{deadline.citation_quote.slice(0, 130)}”
+                    page {deadline.citation_page}: “{deadline.citation_quote.slice(0, 130)}”
                   </p>
                 ) : null}
               </li>

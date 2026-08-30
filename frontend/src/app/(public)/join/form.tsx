@@ -29,7 +29,7 @@ export function JoinForm() {
 
   return (
     <AuthShell
-      step="Step 1 of 3"
+      step="Step 1 of 4"
       title="Create your account"
       hint="We will send a six digit code to your email to make sure it is really yours."
       footer={
