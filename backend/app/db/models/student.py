@@ -37,6 +37,10 @@ class Student(Base):
     deadlines: Mapped[list["Deadline"]] = relationship(
         back_populates="student", cascade="all, delete-orphan"
     )
+    qualifications: Mapped[list["QualificationRecord"]] = relationship(
+        back_populates="student", cascade="all, delete-orphan", lazy="selectin"
+    )
 
 
 from app.db.models.journal import Deadline, JournalRun  # noqa: E402
+from app.db.models.qualification import QualificationRecord  # noqa: E402

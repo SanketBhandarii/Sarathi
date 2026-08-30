@@ -2,7 +2,9 @@ import Link from "next/link";
 
 import { CheckCircleIcon, ClockIcon, QuoteIcon, RadarIcon } from "@/components/icons";
 
-export const dynamic = "force-static";
+import { whereToResume } from "@/lib/session";
+
+export const dynamic = "force-dynamic";
 
 const PROBLEMS = [
   {
@@ -45,7 +47,9 @@ const DOES = [
   },
 ];
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const resume = await whereToResume();
+  const signedIn = resume !== null;
   return (
     <div className="min-h-screen bg-page">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
@@ -53,18 +57,29 @@ export default function LandingPage() {
           Sarathi
         </span>
         <nav className="flex items-center gap-2.5">
-          <Link
-            href="/sign-in"
-            className="rounded-[9px] px-3.5 py-2 text-[13.5px] font-medium text-ink-soft transition-colors hover:bg-line-soft hover:text-ink"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/join"
-            className="rounded-[9px] bg-accent px-4 py-2 text-[13.5px] font-medium text-white transition-colors hover:bg-accent-hover"
-          >
-            Start free
-          </Link>
+          {signedIn ? (
+            <Link
+              href={resume}
+              className="rounded-[9px] bg-accent px-4 py-2 text-[13.5px] font-medium text-white transition-colors hover:bg-accent-hover"
+            >
+              Continue where you left off
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="rounded-[9px] px-3.5 py-2 text-[13.5px] font-medium text-ink-soft transition-colors hover:bg-line-soft hover:text-ink"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/join"
+                className="rounded-[9px] bg-accent px-4 py-2 text-[13.5px] font-medium text-white transition-colors hover:bg-accent-hover"
+              >
+                Start free
+              </Link>
+            </>
+          )}
         </nav>
       </header>
 
@@ -82,16 +97,10 @@ export default function LandingPage() {
           </p>
           <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
             <Link
-              href="/join"
+              href={resume ?? "/join"}
               className="rounded-[10px] bg-accent px-6 py-3 text-[14px] font-medium text-white transition-colors hover:bg-accent-hover"
             >
-              Create your account
-            </Link>
-            <Link
-              href="/dashboard"
-              className="rounded-[10px] border border-line bg-shell px-6 py-3 text-[14px] font-medium text-ink transition-colors hover:bg-line-soft"
-            >
-              See a live example
+              {signedIn ? "Continue where you left off" : "Create your account"}
             </Link>
           </div>
           <p className="mt-5 text-[12.5px] text-ink-faint">
@@ -150,10 +159,10 @@ export default function LandingPage() {
             paperwork, for as many years as you need it.
           </p>
           <Link
-            href="/join"
+            href={resume ?? "/join"}
             className="mt-8 inline-block rounded-[10px] bg-white px-6 py-3 text-[14px] font-medium text-ink transition-opacity hover:opacity-90"
           >
-            Create your account
+            {signedIn ? "Continue where you left off" : "Create your account"}
           </Link>
         </section>
       </main>
