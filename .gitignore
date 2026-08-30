@@ -30,3 +30,9 @@ allaboutthishackathon.txt
 
 # generated document outputs
 data/documents/
+
+# next.js
+frontend/.next/
+frontend/node_modules/
+frontend/out/
+frontend/.env.local
