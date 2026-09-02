@@ -5,8 +5,12 @@ from datetime import date
 
 import pytest
 
+from sqlalchemy import select
+
 from app.auth import service as auth_service
+from app.journal import runner as journal_runner
 from app.db.base import session_scope
+from app.db.models import User
 from app.db.repositories import students as students_repo
 from app.language.phrases import Language
 from app.student.profile import Category, Education, Gender, StudentProfile
@@ -65,10 +69,32 @@ def _graduate_profile() -> StudentProfile:
 @pytest.fixture(scope="session")
 def student_id() -> int:
     profile = _graduate_profile()
+    address = f"sarathi.fixture.{random.randint(100000, 999999)}@example.invalid"
+
     with session_scope() as session:
         row = students_repo.save_profile(session, profile)
         session.flush()
         students_repo.save_history(session, row, profile.education_history)
+        session.add(User(email=address, password_hash="not-a-real-hash", student_id=row.id))
+        made = row.id
+
+    yield made
+
+    with session_scope() as session:
+        owner = session.scalar(select(User).where(User.student_id == made))
+        if owner is not None:
+            session.delete(owner)
+        row = students_repo.get_student(session, made)
+        if row is not None:
+            session.delete(row)
+
+
+@pytest.fixture(scope="session")
+def student_with_no_account() -> int:
+    profile = _graduate_profile()
+    with session_scope() as session:
+        row = students_repo.save_profile(session, profile)
+        session.flush()
         made = row.id
 
     yield made
@@ -77,3 +103,29 @@ def student_id() -> int:
         row = students_repo.get_student(session, made)
         if row is not None:
             session.delete(row)
+
+
+@pytest.fixture(autouse=True)
+def no_real_messages(monkeypatch):
+    class Recorder:
+        channel = "test"
+
+        def __init__(self) -> None:
+            self.sent: list = []
+
+        def send(self, message):
+            from datetime import datetime, timezone
+
+            from app.delivery.messenger import SentMessage
+
+            self.sent.append(message)
+            return SentMessage(
+                to=message.to,
+                body=message.body,
+                channel=self.channel,
+                sent_at=datetime.now(timezone.utc),
+            )
+
+    recorder = Recorder()
+    monkeypatch.setattr(journal_runner, "get_messenger", lambda: recorder)
+    return recorder

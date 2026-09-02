@@ -15,15 +15,16 @@ export const BODY_TONE: Record<string, string> = {
   ibps: "bg-[#33c481]",
   mpsc: "bg-[#f5a524]",
   bmc: "bg-[#e879c8]",
+  india_post: "bg-[#d1483f]",
 };
 
 export function rupees(amount: number | null | undefined): string {
-  if (amount === null || amount === undefined) return ",";
+  if (amount === null || amount === undefined) return "not known";
   return `₹${Math.round(amount).toLocaleString("en-IN")}`;
 }
 
 export function shortDate(iso: string | null): string {
-  if (!iso) return ",";
+  if (!iso) return "not known";
   return new Date(iso).toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",

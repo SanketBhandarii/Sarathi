@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/sidebar";
 import { TopBar } from "@/components/top-bar";
 import { api } from "@/lib/api";
+import { myPhotoUrl } from "@/lib/mine";
 import { currentUser } from "@/lib/session";
 import { todayIso } from "@/lib/today";
 
@@ -14,6 +15,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   const studentId = session.me.student_id;
   let urgent = 0;
   let student = null;
+
+  const photoUrl = await myPhotoUrl(session.token);
 
   try {
     const [profile, deadlines] = await Promise.all([
@@ -30,11 +33,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen p-0 lg:p-6">
       <div className="flex min-h-screen overflow-hidden border-line bg-shell lg:min-h-[calc(100vh-3rem)] lg:rounded-shell lg:border lg:shadow-[0_1px_3px_rgba(16,17,20,0.06)]">
         <Sidebar
-            state={student?.state ?? "Your state"}
-            district={student?.district ?? "Your district"}
-          />
+          state={student?.state ?? "Your state"}
+          district={student?.district ?? "Your district"}
+        />
         <div className="flex min-w-0 flex-1 flex-col">
-          <TopBar student={student} studentId={studentId} urgent={urgent} />
+          <TopBar
+            student={student}
+            studentId={studentId}
+            urgent={urgent}
+            photoUrl={photoUrl}
+          />
           <main className="min-w-0 flex-1 overflow-x-hidden px-6 pb-10 pt-6">{children}</main>
         </div>
       </div>

@@ -119,6 +119,30 @@
       "relative_path": "mpsc/4bff397b3e7546cf.pdf",
       "kind": "recruitment_notification",
       "kind_reason": "It announces a preliminary exam and extends the application window."
+    },
+    {
+      "source_id": "ibps",
+      "title": "Tender Posted on 01 Sep, 2026",
+      "origin_url": "https://www.ibps.in/wp-content/uploads/pre-bid-reply_0001.pdf",
+      "sha256": "c1c2623f2f24887538c999bff238cd3f511d68e32cde0f96a9b6264e7504aa4d",
+      "byte_size": 4458720,
+      "page_count": 10,
+      "fetched_at": "2026-09-02T17:42:40.587390Z",
+      "relative_path": "ibps/c1c2623f2f248875.pdf",
+      "kind": "other",
+      "kind_reason": "The title indicates it is a tender for procurement."
+    },
+    {
+      "source_id": "india_post",
+      "title": "Descriptive Notification",
+      "origin_url": "https://indiapostgdsonline.cept.gov.in/Notifications1/Model_Notification.pdf",
+      "sha256": "30762d6b679eb197bafeca3a2b23d27f0ed2103585aa5b48831f3d8ad53d0a51",
+      "byte_size": 595550,
+      "page_count": 31,
+      "fetched_at": "2026-09-02T17:42:41.863185Z",
+      "relative_path": "india_post/30762d6b679eb197.pdf",
+      "kind": "recruitment_notification",
+      "kind_reason": "Invites applications for Gramin Dak Sevak posts."
     }
   ]
 }

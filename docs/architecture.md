@@ -9,6 +9,7 @@ flowchart TB
         upsc["UPSC<br/>HTML + PDFs"]
         ibps["IBPS<br/>HTML + PDFs"]
         mpsc["MPSC<br/>real browser, JS rendered"]
+        gds["India Post GDS<br/>HTML + PDFs"]
         cal["SSC exam calendar<br/>real browser"]
     end
 

@@ -60,7 +60,7 @@ def decide(rules: ExamRules, student: StudentProfile, today: date | None = None)
     fee_amount, fee_waived, fee_reasons = evaluate_fee(rules, student)
     window_open, window_reason = _window_state(rules, today)
 
-    reasons = age_reasons + qualification_reasons
+    reasons = _without_repeats(age_reasons + qualification_reasons)
     blocking = [r for r in reasons if r.blocks_application]
 
     if blocking:
@@ -87,3 +87,14 @@ def decide(rules: ExamRules, student: StudentProfile, today: date | None = None)
         relaxation_label=label,
         unchecked=rules.could_not_verify,
     )
+
+
+def _without_repeats(reasons: list[Reason]) -> list[Reason]:
+    kept: list[Reason] = []
+    said: set[str] = set()
+    for reason in reasons:
+        if reason.text in said:
+            continue
+        said.add(reason.text)
+        kept.append(reason)
+    return kept

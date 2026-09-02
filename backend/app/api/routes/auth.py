@@ -16,7 +16,7 @@ from app.db.models import User
 from app.db.repositories import students as students_repo
 from app.language.phrases import Language
 from app.student.profile import Category, Education, Gender, StudentProfile
-from app.student.qualifications import EducationHistory, Level, Qualification
+from app.student.qualifications import EducationHistory, LEVEL_LABEL, Qualification
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -155,6 +155,51 @@ def me(user: User = Depends(current_user), db: Session = Depends(get_db)) -> MeO
         student_id=user.student_id,
         has_profile=student is not None,
         name=student.name if student else None,
+    )
+
+
+class ProfileOut(BaseModel):
+    student_id: int
+    email: str
+    name: str
+    date_of_birth: date
+    age_today: float
+    category: Category
+    gender: Gender
+    is_pwbd: bool
+    is_ex_serviceman: bool
+    state: str
+    district: str
+    qualifications: list[Qualification]
+    highest_label: str | None = None
+
+
+@router.get("/profile", response_model=ProfileOut)
+def read_profile(
+    user: User = Depends(current_user), db: Session = Depends(get_db)
+) -> ProfileOut:
+    row = students_repo.get_student(db, user.student_id) if user.student_id else None
+    if row is None:
+        raise HTTPException(status_code=404, detail="Please fill your details first.")
+
+    profile = students_repo.to_profile(row)
+    history = students_repo.to_history(row)
+    top = history.highest_completed
+
+    return ProfileOut(
+        student_id=row.id,
+        email=user.email,
+        name=row.name,
+        date_of_birth=row.date_of_birth,
+        age_today=profile.age_on(date.today()),
+        category=Category(row.category),
+        gender=Gender(row.gender),
+        is_pwbd=row.is_pwbd,
+        is_ex_serviceman=row.is_ex_serviceman,
+        state=row.state,
+        district=row.district,
+        qualifications=history.entries,
+        highest_label=LEVEL_LABEL[top] if top else None,
     )
 
 

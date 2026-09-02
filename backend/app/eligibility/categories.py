@@ -16,21 +16,46 @@ PWBD_PATTERNS = (r"benchmark\s*disabilit", r"\bpwbd\b", r"\bpwd\b", r"persons?\s
 EX_SERVICEMEN_PATTERNS = (r"ex[\s-]*servicem", r"commissioned\s*officer", r"\becos?\b", r"\bsscos?\b")
 FEMALE_PATTERNS = (r"\bwomen\b", r"\bfemale\b")
 
+BOTH_AT_ONCE = (r"\+", r"&", r"belonging\s+to", r"who\s+are\s+also", r"\bcum\b", r"along\s+with")
+
 
 def _matches(text: str, patterns: tuple[str, ...]) -> bool:
     return any(re.search(p, text, re.IGNORECASE) for p in patterns)
 
 
-def label_applies_to(label: str, student: StudentProfile) -> bool:
-    if _matches(label, PWBD_PATTERNS) and student.is_pwbd:
-        return True
-    if _matches(label, EX_SERVICEMEN_PATTERNS) and student.is_ex_serviceman:
-        return True
-    if _matches(label, FEMALE_PATTERNS) and student.gender is Gender.FEMALE:
-        return True
+def categories_named_in(label: str) -> set[Category]:
+    return {
+        category
+        for category, patterns in CATEGORY_PATTERNS.items()
+        if _matches(label, patterns)
+    }
 
-    patterns = CATEGORY_PATTERNS.get(student.category, ())
-    return _matches(label, patterns)
+
+def names_one_person_with_every_trait(label: str) -> bool:
+    return _matches(label, BOTH_AT_ONCE)
+
+
+def label_applies_to(label: str, student: StudentProfile) -> bool:
+    named_categories = categories_named_in(label)
+    names_pwbd = _matches(label, PWBD_PATTERNS)
+    names_ex_serviceman = _matches(label, EX_SERVICEMEN_PATTERNS)
+    names_women = _matches(label, FEMALE_PATTERNS)
+
+    if not (named_categories or names_pwbd or names_ex_serviceman or names_women):
+        return False
+
+    category_fits = student.category in named_categories
+    checks = [
+        (bool(named_categories), category_fits),
+        (names_pwbd, student.is_pwbd),
+        (names_ex_serviceman, student.is_ex_serviceman),
+        (names_women, student.gender is Gender.FEMALE),
+    ]
+    asked = [holds for named, holds in checks if named]
+
+    if names_one_person_with_every_trait(label):
+        return all(asked)
+    return any(asked)
 
 
 def best_relaxation_years(labels_and_years: list[tuple[str, int]], student: StudentProfile) -> tuple[int, str | None]:

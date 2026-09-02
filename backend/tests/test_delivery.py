@@ -55,11 +55,26 @@ def test_a_deadline_day_actually_delivers(student_id):
     assert len(recorder.sent) == run.messages_sent
 
 
-def test_nothing_is_delivered_when_no_number_is_given(student_id):
+def test_it_writes_to_the_address_on_your_account_when_none_is_given(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
-        run_nightly_check(session, student_id=student_id, today=date(2026, 8, 29), messenger=recorder)
+        run = run_nightly_check(
+            session, student_id=student_id, today=date(2026, 8, 29), messenger=recorder
+        )
+    assert run.messages_sent >= 1
+    assert len(recorder.sent) == run.messages_sent
+    assert all("@" in message.to for message in recorder.sent)
+
+
+def test_a_student_with_no_account_is_not_written_to(student_with_no_account):
+    recorder = RecordingMessenger()
+    with session_scope() as session:
+        run = run_nightly_check(
+            session, student_id=student_with_no_account, today=date(2026, 8, 29),
+            messenger=recorder,
+        )
     assert recorder.sent == []
+    assert run.messages_sent == 0
 
 
 def test_a_message_can_go_out_in_hindi(student_id):

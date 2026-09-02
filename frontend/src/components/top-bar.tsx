@@ -8,10 +8,12 @@ export function TopBar({
   student,
   studentId,
   urgent,
+  photoUrl,
 }: {
   student: Student | null;
   studentId: number;
   urgent: number;
+  photoUrl: string | null;
 }) {
   return (
     <header className="flex items-center gap-4 border-b border-line px-6 py-3.5">
@@ -22,7 +24,7 @@ export function TopBar({
         {urgent > 0 ? (
           <Link
             href="/deadlines"
-            className="truncate text-[12.5px] text-ink-soft transition-colors hover:text-ink"
+            className="cursor-pointer truncate text-[12.5px] text-ink-soft transition-colors hover:text-ink"
           >
             {urgent} {urgent === 1 ? "date needs" : "dates need"} you soon
           </Link>
@@ -37,17 +39,29 @@ export function TopBar({
         <CheckNow studentId={studentId} />
 
         {student ? (
-          <div className="flex items-center gap-2.5">
+          <Link
+            href="/me"
+            title="Your profile"
+            className="group flex cursor-pointer items-center gap-2.5 rounded-pill py-1 pl-2.5 pr-1 transition-colors hover:bg-line-soft"
+          >
             <div className="hidden text-right sm:block">
               <p className="text-[12px] font-medium leading-tight text-ink">{student.name}</p>
               <p className="text-[11px] leading-tight text-ink-faint">
-                {student.category} · {Math.round(student.age_today)} years
+                {student.category}, {Math.round(student.age_today)} years
               </p>
             </div>
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-[11.5px] font-semibold text-white">
-              {initials(student.name)}
-            </div>
-          </div>
+            {photoUrl ? (
+              <img
+                src={photoUrl}
+                alt={student.name}
+                className="h-9 w-9 rounded-full border border-line object-cover"
+              />
+            ) : (
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-[11.5px] font-semibold text-white">
+                {initials(student.name)}
+              </div>
+            )}
+          </Link>
         ) : null}
       </div>
     </header>

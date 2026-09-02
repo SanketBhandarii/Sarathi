@@ -1,0 +1,118 @@
+{
+  "exam_name": "Descriptive Notification",
+  "source_id": "india_post",
+  "document_sha256": "30762d6b679eb197bafeca3a2b23d27f0ed2103585aa5b48831f3d8ad53d0a51",
+  "age": {
+    "minimum_years": 18,
+    "maximum_years": 40,
+    "reckoned_on": null,
+    "citation": {
+      "page": 4,
+      "quote": "i. Minimum age: 18 years Maximum age: 40 years [Subject to relaxations as per sub para (a) below]"
+    }
+  },
+  "age_relaxations": [
+    {
+      "category": "Schedule Caste/Scheduled Tribe (SC/ST)",
+      "extra_years": 5,
+      "citation": {
+        "page": 4,
+        "quote": "1. Schedule Caste/Scheduled Tribe (SC/ST) 5 years"
+      }
+    },
+    {
+      "category": "Other Backward Classes (OBC)",
+      "extra_years": 3,
+      "citation": {
+        "page": 4,
+        "quote": "2. Other Backward Classes (OBC) 3 years"
+      }
+    },
+    {
+      "category": "Persons with Disabilities (PwD)",
+      "extra_years": 10,
+      "citation": {
+        "page": 4,
+        "quote": "4. Persons with Disabilities (PwD) 10 years"
+      }
+    },
+    {
+      "category": "Persons with Disabilities (PwD) + OBC",
+      "extra_years": 13,
+      "citation": {
+        "page": 4,
+        "quote": "5. Persons with Disabilities (PwD) + OBC 13 years"
+      }
+    },
+    {
+      "category": "Disabilities (PwD) + SC/ST",
+      "extra_years": 15,
+      "citation": {
+        "page": 4,
+        "quote": "6. Disabilities (PwD) + SC/ST 15 years"
+      }
+    }
+  ],
+  "qualifications": [
+    {
+      "requirement": "Secondary School Examination pass certificate of 10th standard with passing marks in Mathematics and English conducted by any recognized Board of School Education by the Government of India/State Governments/ Union Territories in India.",
+      "minimum_percentage": null,
+      "citation": {
+        "page": 5,
+        "quote": "Educational qualification for engagement of GDS is Secondary School Examination pass certificate of 10th standard with passing marks in Mathematics and English conducted by any recognized Board of School Education by the Government of India/State Governments/ Union Territories in India."
+      }
+    },
+    {
+      "requirement": "The applicant should have studied the local language at least up to 10th Standard from a recognized board.",
+      "minimum_percentage": null,
+      "citation": {
+        "page": 5,
+        "quote": "The applicant should have studied the local language at least up to 10th Standard from a recognized board."
+      }
+    }
+  ],
+  "fees": [],
+  "key_dates": [
+    {
+      "label": "Date of Department of Personnel and Training Office Memorandum No. 36039/1/2019-Estt (Res)",
+      "happens_on": "2019-01-31",
+      "citation": {
+        "page": 6,
+        "quote": "e with the guidelines of the Central Government given in the Department of Personnel and Training OM No. 36039/1/2019-Estt (Res) dated 31.01.2019."
+      }
+    },
+    {
+      "label": "Date of referenced notification for OBC/EWS reservation",
+      "happens_on": "2024-07-12",
+      "citation": {
+        "page": 6,
+        "quote": "A person seeking engagement on the basis of reservation of OBC/EWS may refer to the orders of DoPT/DoP mentioned para 6 of the Notification dated 12.07.2024, DoPT OM dated 25.07.2003 in the matter of crucial date in respect of OBC Certificate and clarification of Staff Selection Commission dated 09.08.2024 (copy enclosed) in respect of EWS Certificate to decide the matter in individual cases."
+      }
+    },
+    {
+      "label": "Date of DoPT Office Memorandum regarding OBC Certificate",
+      "happens_on": "2003-07-25",
+      "citation": {
+        "page": 6,
+        "quote": "A person seeking engagement on the basis of reservation of OBC/EWS may refer to the orders of DoPT/DoP mentioned para 6 of the Notification dated 12.07.2024, DoPT OM dated 25.07.2003 in the matter of crucial date in respect of OBC Certificate and clarification of Staff Selection Commission dated 09.08.2024 (copy enclosed) in respect of EWS Certificate to decide the matter in individual cases."
+      }
+    },
+    {
+      "label": "Date of Staff Selection Commission clarification for EWS Certificate",
+      "happens_on": "2024-08-09",
+      "citation": {
+        "page": 6,
+        "quote": "A person seeking engagement on the basis of reservation of OBC/EWS may refer to the orders of DoPT/DoP mentioned para 6 of the Notification dated 12.07.2024, DoPT OM dated 25.07.2003 in the matter of crucial date in respect of OBC Certificate and clarification of Staff Selection Commission dated 09.08.2024 (copy enclosed) in respect of EWS Certificate to decide the matter in individual cases."
+      }
+    },
+    {
+      "label": "Date of order No. 17-08/2017-GDS referenced",
+      "happens_on": "2024-10-09",
+      "citation": {
+        "page": 6,
+        "quote": "[Refer order No. 17-08/2017-GDS dated 09.10.2024]"
+      }
+    }
+  ],
+  "could_not_verify": []
+}

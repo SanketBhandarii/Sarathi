@@ -16,6 +16,7 @@ from app.eligibility.verdict import Bucket
 from app.extraction.document import load_pages
 from app.extraction.review import check_citations, check_values
 from app.storage.cache import NotificationCache
+from app.journal.contact import where_to_write
 from app.journal.events import Event, EventKind, RunTally
 from app.sources.registry import SOURCES
 
@@ -102,12 +103,24 @@ def run_nightly_check(
     _look_for_news(session, student_id, tally, today)
 
     messages = tally.messages_to_send
+    reach = send_to or where_to_write(session, student_id)
+    sent = 0
+
     if not messages:
         tally.add(Event(EventKind.NOTHING_TO_SAY, "nothing needed your attention"))
-    elif send_to:
+    elif reach:
         post = messenger or get_messenger()
         for message in messages:
-            post.send(OutgoingMessage(to=send_to, body=message.detail, language=language))
+            post.send(OutgoingMessage(to=reach, body=message.detail, language=language))
+            sent += 1
+    else:
+        tally.add(
+            Event(
+                EventKind.NOTHING_TO_SAY,
+                f"{len(messages)} things were worth telling you, "
+                "but there is no address to write to",
+            )
+        )
 
     run = JournalRun(
         student_id=student_id,
@@ -117,7 +130,7 @@ def run_nightly_check(
         rules_evaluated=tally.rules_evaluated,
         citations_verified=tally.citations_verified,
         changes_found=tally.changes_found,
-        messages_sent=len(messages),
+        messages_sent=sent,
         seconds_taken=round(time.perf_counter() - started, 2),
     )
     session.add(run)

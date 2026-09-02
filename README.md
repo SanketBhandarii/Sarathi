@@ -12,7 +12,7 @@ A student sits one exam a year. They fight paperwork all year.
 
 Three things go wrong, and they stack:
 
-1. **They do not know what exists.** Thirty lakh people fight for SSC CGL. Meanwhile RBI Grade B, NABARD and SEBI take far fewer applicants, because far fewer people have heard of them.
+1. **They do not know what exists.** Thirty lakh people fight for SSC CGL. Meanwhile India Post GDS asks only for a 10th pass and holds no exam at all, and RBI Grade B, NABARD and SEBI take far fewer applicants, because far fewer people have heard of them.
 2. **They do not know if they qualify.** Eligibility is five rules multiplied together: age, category relaxation, qualification level, domicile, attempts used. Most find out only after paying the fee.
 3. **Then the paperwork takes it away.** The photo must be 20 to 50 KB. From 2026 SSC will not accept a gallery photo at all. The correction window opens for five days and nobody announces it.
 
@@ -177,7 +177,7 @@ cd backend
 .venv/Scripts/python -m pytest tests/ -q
 ```
 
-159 tests. They never send a real email — a fixture replaces the mailer for the whole suite.
+184 tests. They never send a real email or a real message — a fixture replaces the mailer for the whole suite.
 
 ---
 
@@ -185,7 +185,7 @@ cd backend
 
 - **MPSC publishes scanned images.** Their notifications are photographs of paper with no extractable text. Those exams appear in the Radar with their real title, date and official link, marked plainly as unread. Reading them needs a vision model.
 - **The "When I was wrong" page is labelled.** We have read one version of each notification so far, so that screen says in plain words that the earlier reading was made to demonstrate the behaviour. The comparison code is the same either way.
-- **Five sources, not fifty.** SSC, UPSC, IBPS, MPSC and the SSC exam calendar. Adding a sixth is a small, documented file.
+- **Six sources, not fifty.** SSC, UPSC, IBPS, MPSC, India Post GDS and the SSC exam calendar. Adding a seventh is a small, documented file.
 - **UPSC recruitment advertisements list many posts** with different rules each. Sarathi handles single-rule exam notifications well and says so when it cannot read a multi-post advert cleanly.
 
 ## Licence

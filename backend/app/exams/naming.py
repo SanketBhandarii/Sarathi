@@ -10,6 +10,7 @@ BODY_NAME: dict[str, str] = {
     "ibps": "IBPS",
     "mpsc": "MPSC",
     "bmc": "BMC",
+    "india_post": "India Post",
 }
 
 BODY_FULL: dict[str, str] = {
@@ -18,9 +19,11 @@ BODY_FULL: dict[str, str] = {
     "ibps": "Institute of Banking Personnel Selection",
     "mpsc": "Maharashtra Public Service Commission",
     "bmc": "Brihanmumbai Municipal Corporation",
+    "india_post": "Department of Posts",
 }
 
 KNOWN: list[tuple[str, str]] = [
+    (r"gramin\s+dak\s+sevak|gds|descriptive\s+notification", "India Post GDS"),
     (r"crp[\s\-]*po", "IBPS PO"),
     (r"crp[\s\-]*clerk", "IBPS Clerk"),
     (r"crp[\s\-]*rrb", "IBPS RRB"),
