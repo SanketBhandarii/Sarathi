@@ -8,6 +8,8 @@ from app.delivery.messenger import ConsoleMessenger, OutgoingMessage
 from app.journal.runner import run_nightly_check
 from app.language.phrases import Language, say
 
+from tests.conftest import A_DAY_NEAR_A_DEADLINE, A_QUIET_DAY
+
 
 class RecordingMessenger:
     channel = "test"
@@ -38,7 +40,7 @@ def test_a_quiet_day_sends_nothing_to_the_student(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
         run_nightly_check(
-            session, student_id=student_id, today=date(2026, 7, 15),
+            session, student_id=student_id, today=A_QUIET_DAY,
             messenger=recorder, send_to="+910000000000",
         )
     assert recorder.sent == []
@@ -48,7 +50,7 @@ def test_a_deadline_day_actually_delivers(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
         run = run_nightly_check(
-            session, student_id=student_id, today=date(2026, 8, 29),
+            session, student_id=student_id, today=A_DAY_NEAR_A_DEADLINE,
             messenger=recorder, send_to="+910000000000",
         )
     assert run.messages_sent >= 1
@@ -59,7 +61,7 @@ def test_it_writes_to_the_address_on_your_account_when_none_is_given(student_id)
     recorder = RecordingMessenger()
     with session_scope() as session:
         run = run_nightly_check(
-            session, student_id=student_id, today=date(2026, 8, 29), messenger=recorder
+            session, student_id=student_id, today=A_DAY_NEAR_A_DEADLINE, messenger=recorder
         )
     assert run.messages_sent >= 1
     assert len(recorder.sent) == run.messages_sent
@@ -70,7 +72,7 @@ def test_a_student_with_no_account_is_not_written_to(student_with_no_account):
     recorder = RecordingMessenger()
     with session_scope() as session:
         run = run_nightly_check(
-            session, student_id=student_with_no_account, today=date(2026, 8, 29),
+            session, student_id=student_with_no_account, today=A_DAY_NEAR_A_DEADLINE,
             messenger=recorder,
         )
     assert recorder.sent == []
@@ -81,7 +83,7 @@ def test_a_message_can_go_out_in_hindi(student_id):
     recorder = RecordingMessenger()
     with session_scope() as session:
         run_nightly_check(
-            session, student_id=student_id, today=date(2026, 8, 29),
+            session, student_id=student_id, today=A_DAY_NEAR_A_DEADLINE,
             messenger=recorder, send_to="+910000000000", language=Language.HINDI,
         )
     assert all(m.language is Language.HINDI for m in recorder.sent)

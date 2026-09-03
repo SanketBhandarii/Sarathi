@@ -129,3 +129,17 @@ def no_real_messages(monkeypatch):
     recorder = Recorder()
     monkeypatch.setattr(journal_runner, "get_messenger", lambda: recorder)
     return recorder
+
+
+A_QUIET_DAY = date(2026, 6, 1)
+A_DAY_NEAR_A_DEADLINE = date(2026, 8, 29)
+
+
+@pytest.fixture
+def a_quiet_day() -> date:
+    return A_QUIET_DAY
+
+
+@pytest.fixture
+def a_day_near_a_deadline() -> date:
+    return A_DAY_NEAR_A_DEADLINE

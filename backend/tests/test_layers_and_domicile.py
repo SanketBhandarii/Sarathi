@@ -7,7 +7,7 @@ import pytest
 from app.eligibility.engine import decide
 from app.eligibility.layers import Layer, domicile_blocks, layer_for
 from app.eligibility.verdict import Bucket
-from app.extraction.schema import AgeRule, Citation, ExamRules
+from app.extraction.schema import AgeRule, Citation, ExamRules, KeyDate
 from app.student.profile import Category, Education, StudentProfile
 
 CITE = Citation(page=1, quote="Minimum: 20 years Maximum: 30 years")
@@ -56,6 +56,13 @@ def test_domicile_makes_the_verdict_not_for_you():
     rules = ExamRules(
         exam_name="MPSC State Services", source_id="mpsc", document_sha256="abc",
         age=AgeRule(minimum_years=19, maximum_years=38, citation=CITE),
+        key_dates=[
+            KeyDate(
+                label="Last date for submission of applications",
+                happens_on=date(2026, 9, 11),
+                citation=CITE,
+            )
+        ],
     )
     local = decide(rules, MAHARASHTRA, date(2026, 8, 29))
     outsider = decide(rules, BIHAR, date(2026, 8, 29))

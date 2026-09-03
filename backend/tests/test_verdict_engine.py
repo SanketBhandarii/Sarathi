@@ -12,6 +12,7 @@ from app.extraction.schema import (
     ApplicationFee,
     Citation,
     ExamRules,
+    KeyDate,
     Qualification,
 )
 from app.student.profile import Category, Education, Gender, StudentProfile
@@ -33,6 +34,13 @@ def make_rules(**overrides) -> ExamRules:
         fees=[
             ApplicationFee(amount_rupees=175, applies_to="SC/ST/PwBD candidates", citation=CITE),
             ApplicationFee(amount_rupees=850, applies_to="all others", citation=CITE),
+        ],
+        key_dates=[
+            KeyDate(
+                label="Last date for submission of applications",
+                happens_on=date(2026, 9, 11),
+                citation=CITE,
+            )
         ],
     )
     base.update(overrides)
@@ -102,3 +110,29 @@ def test_every_verdict_reason_can_be_traced_to_the_pdf():
     assert len(cited) >= 2
     for reason in cited:
         assert reason.citation.page > 0
+
+
+def test_an_exam_with_no_last_date_is_never_called_open():
+    verdict = decide(make_rules(key_dates=[]), make_student(date(2000, 1, 1)), TODAY)
+    assert verdict.bucket is Bucket.UNKNOWN
+    assert any("could not find the last date" in r.text for r in verdict.reasons)
+
+
+def test_an_exam_whose_last_date_has_passed_is_closed_not_rejected():
+    rules = make_rules(
+        key_dates=[
+            KeyDate(
+                label="Last date for submission of applications",
+                happens_on=date(2026, 7, 1),
+                citation=CITE,
+            )
+        ]
+    )
+    verdict = decide(rules, make_student(date(2000, 1, 1)), TODAY)
+    assert verdict.bucket is Bucket.CLOSED_FOR_NOW
+    assert any("closed on 01 July 2026" in r.text for r in verdict.reasons)
+
+
+def test_a_missing_last_date_does_not_hide_a_real_age_problem():
+    verdict = decide(make_rules(key_dates=[]), make_student(date(1985, 1, 1)), TODAY)
+    assert verdict.bucket is Bucket.NOT_FOR_YOU

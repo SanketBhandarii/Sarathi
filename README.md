@@ -177,7 +177,7 @@ cd backend
 .venv/Scripts/python -m pytest tests/ -q
 ```
 
-184 tests. They never send a real email or a real message — a fixture replaces the mailer for the whole suite.
+196 tests. They never send a real email or a real message — a fixture replaces the mailer for the whole suite.
 
 ---
 

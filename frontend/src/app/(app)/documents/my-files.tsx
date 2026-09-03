@@ -38,6 +38,21 @@ const WHAT_TO_GIVE: Record<Kind, string> = {
   thumb_impression: "a picture of your left thumb impression",
 };
 
+function saveToDisk(base64: string, filename: string): void {
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+
+  const url = URL.createObjectURL(new Blob([bytes], { type: "image/jpeg" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
 function Slot({
   document: item,
   token,
@@ -199,13 +214,13 @@ function Slot({
                   needs {size.needed}
                 </p>
 
-                <a
-                  href={`data:image/jpeg;base64,${size.image_base64}`}
-                  download={`${item.kind}_${size.source_id}.jpg`}
-                  className="mt-2.5 block rounded-[8px] bg-brand px-3 py-1.5 text-center text-[11.5px] font-medium text-white transition-opacity hover:opacity-90"
+                <button
+                  type="button"
+                  onClick={() => saveToDisk(size.image_base64, `${item.kind}_${size.source_id}.jpg`)}
+                  className="mt-2.5 block w-full cursor-pointer rounded-[8px] bg-brand px-3 py-1.5 text-center text-[11.5px] font-medium text-white transition-opacity hover:opacity-90"
                 >
                   Save
-                </a>
+                </button>
               </div>
             ))}
           </div>

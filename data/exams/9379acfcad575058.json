@@ -51,7 +51,7 @@
       "minimum_percentage": null,
       "citation": {
         "page": 13,
-        "quote": "A Degree (Graduation) in any discipline from a University recognised by the Govt. Of India or any equivalent qualification recognized as such by the Central Government."
+        "quote": "V. EDUCATIONAL QUALIFICATIONS (As on 21.07.2026): A Degree (Graduation) in any discipline from a University recognised by the Govt. Of India or any equivalent qualification recognized as such by the Central Government."
       }
     }
   ],
@@ -89,6 +89,15 @@
         "page": 1,
         "quote": "Payment of Application Fees/Intimation Charges (Online) 01-07-2026 to 21-07-2026"
       }
+    },
+    {
+      "label": "Last date for submission of applications",
+      "happens_on": "2026-07-21",
+      "citation": {
+        "page": 24,
+        "quote": "Application Fees/ Intimation Charges [Online payment from 01.07.2026 to 21.07.2026, both dates inclusive] shall be as follows: - Rs"
+      }
     }
-  ]
+  ],
+  "could_not_verify": []
 }

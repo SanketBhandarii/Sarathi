@@ -7,6 +7,8 @@ from fastapi.testclient import TestClient
 
 from app.main import app
 
+from tests.conftest import A_DAY_NEAR_A_DEADLINE, A_QUIET_DAY
+
 
 @pytest.fixture(scope="module")
 def client():
@@ -16,7 +18,7 @@ def client():
 
 def test_a_quiet_day_sends_nothing(client, student_id):
     body = client.post(
-        f"/students/{student_id}/journal/run", params={"today": "2026-07-15"}
+        f"/students/{student_id}/journal/run", params={"today": A_QUIET_DAY.isoformat()}
     ).json()
     assert body["messages_sent"] == 0
     assert body["was_silent"] is True
@@ -25,21 +27,23 @@ def test_a_quiet_day_sends_nothing(client, student_id):
 
 def test_a_day_near_a_deadline_sends_one_message(client, student_id):
     body = client.post(
-        f"/students/{student_id}/journal/run", params={"today": "2026-08-29"}
+        f"/students/{student_id}/journal/run", params={"today": A_DAY_NEAR_A_DEADLINE.isoformat()}
     ).json()
     assert body["messages_sent"] >= 1
     assert body["was_silent"] is False
 
 
 def test_the_agent_does_the_same_work_whether_it_speaks_or_not(client, student_id):
-    quiet = client.post(f"/students/{student_id}/journal/run", params={"today": "2026-07-15"}).json()
-    busy = client.post(f"/students/{student_id}/journal/run", params={"today": "2026-08-29"}).json()
-    assert quiet["checks_run"] == busy["checks_run"]
+    quiet = client.post(f"/students/{student_id}/journal/run", params={"today": A_QUIET_DAY.isoformat()}).json()
+    busy = client.post(f"/students/{student_id}/journal/run", params={"today": A_DAY_NEAR_A_DEADLINE.isoformat()}).json()
+
+    assert quiet["sources_checked"] == busy["sources_checked"]
+    assert quiet["citations_verified"] == busy["citations_verified"]
     assert quiet["messages_sent"] < busy["messages_sent"]
 
 
 def test_every_run_records_what_it_looked_at(client, student_id):
-    body = client.post(f"/students/{student_id}/journal/run", params={"today": "2026-07-15"}).json()
+    body = client.post(f"/students/{student_id}/journal/run", params={"today": A_QUIET_DAY.isoformat()}).json()
     assert body["events"]
     assert any(e["kind"] == "source_checked" for e in body["events"])
     assert any("nothing needed your attention" in e["detail"] for e in body["events"])

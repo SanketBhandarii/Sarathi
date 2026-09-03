@@ -8,6 +8,7 @@ from agents.verifier import Verdict, verify
 from app.extraction.document import Page, has_readable_text
 from app.extraction.review import prune_unsupported
 from app.extraction.schema import ExamRules
+from app.extraction.windows import find_last_date_to_apply
 
 
 @dataclass
@@ -70,4 +71,29 @@ def extract_and_verify(
         verdict = verify(rules, pages, use_model=False)
         history.append(f"pruned unverifiable claims: {verdict.summary()}")
 
+    rules, note = _add_last_date_if_missing(rules, pages)
+    if note:
+        history.append(note)
+
     return PipelineResult(rules=rules, verdict=verdict, attempts=attempt, history=history)
+
+
+def _already_knows_when_it_closes(rules: ExamRules) -> bool:
+    return any(
+        "last" in entry.label.lower() or "clos" in entry.label.lower()
+        for entry in rules.key_dates
+    )
+
+
+def _add_last_date_if_missing(rules: ExamRules, pages: list[Page]) -> tuple[ExamRules, str | None]:
+    if _already_knows_when_it_closes(rules):
+        return rules, None
+
+    found = find_last_date_to_apply([page.text for page in pages])
+    if found is None:
+        return rules, "no last date to apply anywhere in this document, so it stays unknown"
+
+    return (
+        rules.model_copy(update={"key_dates": [*rules.key_dates, found]}),
+        f"read the last date to apply from page {found.citation.page}: {found.happens_on}",
+    )
