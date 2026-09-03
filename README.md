@@ -100,7 +100,7 @@ Layers 1 and 2 exist because of something found during development: planted erro
 | **Exam Radar** | Every exam in four layers: Central, your State, your City, other states open to all. Nothing is hidden; exams you cannot take are shown with the reason. |
 | **Verdict engine** | Age with category relaxation, qualification **level**, marks, fees, domicile. Six buckets including "closed for now, it runs again" — because telling a student CGL is "not for you" would be a lie. |
 | **Education ladder** | 10th, 12th, ITI, Diploma, Graduation, PG. Percentage or CGPA with live conversion. A diploma does not satisfy a degree requirement, and desirable qualifications never block. |
-| **Document maker** | Reads the size rules out of the notification, then turns a phone photo into the exact pixels and byte range. Per commission, because SSC wants a 236×79 signature and IBPS wants 140×60. |
+| **Document maker** | Reads the size rules out of the notification, then turns a phone photo into the exact pixels and byte range. Per commission, because SSC wants a 236×79 signature and IBPS wants 140×60. A one page PDF sheet holds everything together, watermarked so nobody uploads it by mistake. |
 | **Agent Journal** | Every nightly run recorded: sources checked, quotes re-verified, rules evaluated, messages sent. Usually zero. |
 | **When I was wrong** | Compares two readings of a notification and says plainly what changed, with the clause from each. A date that moves *earlier* is flagged differently, because only that one costs a student time. |
 | **Deadlines + age cliff** | "You turn 34 on 14 November 2028. That day one exam closes to you permanently." |
@@ -177,7 +177,7 @@ cd backend
 .venv/Scripts/python -m pytest tests/ -q
 ```
 
-196 tests. They never send a real email or a real message — a fixture replaces the mailer for the whole suite.
+204 tests. They never send a real email or a real message — a fixture replaces the mailer for the whole suite.
 
 ---
 

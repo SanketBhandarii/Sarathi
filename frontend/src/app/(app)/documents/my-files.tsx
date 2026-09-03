@@ -69,15 +69,27 @@ function Slot({
   const [problem, setProblem] = useState<string | null>(null);
 
   async function loadSizes() {
+    setBusy(true);
+    setProblem(null);
     try {
       const response = await fetch(`${BASE}/me/documents/${item.kind}/sizes`, {
         headers: { Authorization: `Bearer ${token}` },
         cache: "no-store",
       });
-      if (!response.ok) return;
-      setSizes((await response.json()) as SizedFile[]);
-    } catch {
-      /* leave the sizes empty */
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(readProblem(data));
+
+      const made = data as SizedFile[];
+      if (made.length === 0) {
+        throw new Error(`No commission asks for a ${item.label.toLowerCase()}.`);
+      }
+      setSizes(made);
+    } catch (error) {
+      setProblem(
+        error instanceof Error ? error.message : "Sarathi could not make the sizes just now.",
+      );
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -120,7 +132,7 @@ function Slot({
             <h3 className="text-[14px] font-semibold text-ink">{item.label}</h3>
             {saved ? (
               <span className="rounded-[6px] bg-good-soft px-2 py-0.5 text-[11px] font-medium text-good">
-                saved to your account
+                saved
               </span>
             ) : (
               <span className="rounded-[6px] bg-sun-soft px-2 py-0.5 text-[11px] font-medium text-sun">
@@ -132,7 +144,7 @@ function Slot({
           <p className="mt-0.5 text-[11.5px] leading-relaxed text-ink-faint">{item.guidance}</p>
           {item.is_private ? (
             <p className="mt-1 text-[11px] text-ink-faint">
-              Kept private. Only you can open it, through a link that expires.
+              Kept private. Only you can open it, using a link that expires.
             </p>
           ) : null}
         </div>
@@ -180,7 +192,7 @@ function Slot({
       {sizes.length > 0 ? (
         <div className="mt-4">
           <p className="text-[12px] font-medium text-ink">
-            Made from the one you gave, ready for every commission
+            Made from your picture, in the size each commission asks for
           </p>
           <div className="mt-2.5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {sizes.map((size) => (
@@ -230,6 +242,50 @@ function Slot({
   );
 }
 
+function SheetButton({ token }: { token: string }) {
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState<string | null>(null);
+
+  async function onClick() {
+    setBusy(true);
+    setProblem(null);
+    try {
+      const response = await fetch(`${BASE}/me/documents/sheet`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      if (!response.ok) throw new Error("Sarathi could not make your sheet just now.");
+
+      const url = URL.createObjectURL(await response.blob());
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "sarathi_documents.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      setProblem(error instanceof Error ? error.message : "Please try again.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col items-end gap-1.5">
+      <button
+        type="button"
+        onClick={onClick}
+        disabled={busy}
+        className="cursor-pointer whitespace-nowrap rounded-[9px] bg-ink px-4 py-2.5 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+      >
+        {busy ? "Making your sheet" : "Download my sheet as PDF"}
+      </button>
+      {problem ? <p className="text-[11.5px] text-stop">{problem}</p> : null}
+    </div>
+  );
+}
+
 export function MyFiles({
   documents,
   token,
@@ -255,10 +311,20 @@ export function MyFiles({
       </div>
       <div className="border-y border-line bg-accent-soft px-5 py-3.5">
         <p className="text-[12px] leading-relaxed text-accent">
-          Give each picture once. Sarathi keeps the original and makes every size any commission
-          asks for, so you never resize anything again. Your signature and thumb impression are
+          Upload each picture once. Sarathi stores the original and makes every size a commission
+          asks for, so you do not have to resize anything. Your signature and thumb impression are
           kept private.
         </p>
+      </div>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
+        <div>
+          <p className="text-[12.5px] font-medium text-ink">One sheet with everything on it</p>
+          <p className="mt-0.5 text-[11.5px] leading-relaxed text-ink-soft">
+            Your details, pictures and marks on one page you can keep or print. It has a Sarathi
+            watermark, so keep it for your own use. Do not upload it to a form.
+          </p>
+        </div>
+        <SheetButton token={token} />
       </div>
       {documents.map((item) => (
         <Slot

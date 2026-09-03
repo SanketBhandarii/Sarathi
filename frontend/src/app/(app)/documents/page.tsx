@@ -39,9 +39,9 @@ export default async function DocumentsPage() {
       <PageHead date={longDate(todayDate())} greeting="My Documents" />
 
       <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
-        A form will reject a photo that is one kilobyte too big, and every commission wants a
-        different size. Give your photo, signature and thumb impression once. Sarathi keeps them
-        and makes whatever size a form asks for.
+        Each commission asks for a different size, and a form rejects a file that is even slightly
+        too large. Upload your photo, signature and thumb impression once. Sarathi stores them and
+        makes the exact size each form needs.
       </p>
 
       <Card
@@ -52,8 +52,8 @@ export default async function DocumentsPage() {
       </Card>
 
       <p className="text-[11.5px] leading-relaxed text-ink-faint">
-        Sizes come from each commission&apos;s own instructions, and from notifications Sarathi has
-        read directly. Always check the notification before you upload.
+        Sizes are taken from each commission&apos;s instructions and from the notifications Sarathi
+        has read. Check the notification before you upload.
       </p>
     </div>
   );

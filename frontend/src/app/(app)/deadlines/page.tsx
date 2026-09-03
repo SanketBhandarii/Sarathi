@@ -37,8 +37,8 @@ export default async function DeadlinesPage() {
       <PageHead date={longDate(todayDate())} greeting="Deadlines" />
 
       <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
-        Every date here was read out of the commission&apos;s own notification, not copied from a
-        job website.
+        Every date here was read from the commission&apos;s own notification. None of it is copied
+        from a job website.
       </p>
 
       {cliff.has_warning ? (

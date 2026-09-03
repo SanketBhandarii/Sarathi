@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import {
   AlertIcon,
   CalendarIcon,
-  CogIcon,
   FileIcon,
   GridIcon,
   JournalIcon,
@@ -20,7 +19,6 @@ const LINKS = [
   { href: "/documents", label: "Documents", icon: FileIcon },
   { href: "/changes", label: "Corrections", icon: AlertIcon },
   { href: "/journal", label: "Agent Journal", icon: JournalIcon },
-  { href: "/inside", label: "Inside Sarathi", icon: CogIcon },
 ];
 
 export function Sidebar({ state, district }: { state: string; district: string }) {
@@ -82,7 +80,7 @@ export function Sidebar({ state, district }: { state: string; district: string }
         <div className="rounded-card border border-line bg-page px-3.5 py-3">
           <p className="text-[12px] font-medium text-ink">Sarathi checks every night</p>
           <p className="mt-1 text-[11.5px] leading-relaxed text-ink-soft">
-            It only writes to you when a date or a rule actually needs you.
+            You are contacted only when a date or a rule needs your attention.
           </p>
         </div>
       </div>

@@ -26,11 +26,11 @@ export function TopBar({
             href="/deadlines"
             className="cursor-pointer truncate text-[12.5px] text-ink-soft transition-colors hover:text-ink"
           >
-            {urgent} {urgent === 1 ? "date needs" : "dates need"} you soon
+            {urgent} {urgent === 1 ? "date needs" : "dates need"} your attention
           </Link>
         ) : (
           <span className="hidden truncate text-[12.5px] text-ink-soft sm:inline">
-            Nothing needs you right now
+            Nothing needs your attention
           </span>
         )}
       </div>

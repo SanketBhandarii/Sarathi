@@ -46,9 +46,8 @@ export default async function ChangesPage() {
       <PageHead date={longDate(todayDate())} greeting="Corrections" />
 
       <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
-        Commissions change dates and rules after they publish, and they do it in a separate notice
-        most students never see. Sarathi watches for those notices. When it can read one, it tells
-        you exactly what changed and admits what it told you before was wrong.
+        A commission can change a date or a rule after it publishes a notification. The change is
+        put in a separate notice. Sarathi checks for those notices and lists them here.
       </p>
 
       {corrections.length === 0 ? (
@@ -107,10 +106,9 @@ export default async function ChangesPage() {
             Why {unreadable} of these say &quot;cannot read&quot;
           </p>
           <p className="mt-1.5 text-[12px] leading-relaxed text-ink-soft">
-            UPSC and MPSC publish corrections as photographs of paper rather than as text. There is
-            nothing in the file to read. Sarathi will not invent what a notice says, so it does the
-            one useful thing it can: it tells you the correction exists, which is the part students
-            usually miss, and takes you straight to the commission&apos;s own page.
+            UPSC and MPSC publish some corrections as scans, so the file holds a picture of the page
+            and no text. Sarathi cannot read what changed and will not guess. It tells you the
+            correction exists and links to the commission&apos;s page so you can read it there.
           </p>
         </div>
       ) : null}

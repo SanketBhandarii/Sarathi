@@ -44,7 +44,7 @@ export default async function MyProfilePage() {
   ]);
 
   if (!profile) {
-    return <Offline hint="Your details live on the backend." />;
+    return <Offline hint="Your details could not be loaded." />;
   }
 
   const photo = pictures?.find((one) => one.kind === "photograph") ?? null;
@@ -55,8 +55,8 @@ export default async function MyProfilePage() {
       <PageHead date={longDate(todayDate())} greeting="My Profile" />
 
       <p className="-mt-2 max-w-2xl text-[13px] leading-relaxed text-ink-soft">
-        Every verdict Sarathi gives you is worked out from what is on this page. If something here
-        is wrong, the answers will be wrong too. Change anything and every exam is judged again.
+        Your details decide which exams you can apply for. If a detail here is wrong, the result
+        will be wrong. After you save a change, your exams are checked again.
       </p>
 
       <div className="grid gap-6 lg:grid-cols-[300px_minmax(0,1fr)]">
@@ -95,8 +95,8 @@ export default async function MyProfilePage() {
             <div className="border-t border-line px-5 py-4">
               {uploaded.length === 0 ? (
                 <p className="text-[12.5px] leading-relaxed text-ink-soft">
-                  You have not added any yet. Forms will ask for a photo, a signature and a thumb
-                  impression, each in a size the commission decides.
+                  You have not added any yet. Forms ask for a photo, a signature and a thumb
+                  impression. Each commission sets its own size.
                 </p>
               ) : (
                 <ul className="flex flex-col gap-2.5">
@@ -124,14 +124,14 @@ export default async function MyProfilePage() {
                 href="/documents"
                 className="mt-4 inline-flex cursor-pointer items-center gap-1.5 text-[12.5px] font-medium text-accent hover:underline"
               >
-                Open the document maker
+                Open Documents
               </Link>
             </div>
           </Card>
         </div>
 
         <div className="flex flex-col gap-6">
-          <Card icon={<SettingsIcon className="h-4 w-4" />} title="What Sarathi knows about you">
+          <Card icon={<SettingsIcon className="h-4 w-4" />} title="Your details">
             <div className="border-t border-line px-5 py-4">
               <div className="grid gap-x-8 sm:grid-cols-2">
                 <div>
@@ -147,7 +147,7 @@ export default async function MyProfilePage() {
                   <Line label="Gender" value={GENDER_LABEL[profile.gender] ?? profile.gender} />
                   <Line label="State" value={profile.state} />
                   <Line label="District" value={profile.district} />
-                  <Line label="Highest finished" value={profile.highest_label ?? "Not given yet"} />
+                  <Line label="Highest qualification" value={profile.highest_label ?? "Not given yet"} />
                 </div>
               </div>
 

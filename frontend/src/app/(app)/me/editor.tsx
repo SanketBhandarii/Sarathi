@@ -149,15 +149,15 @@ export function ProfileEditor({ profile, token }: { profile: MyProfile; token: s
 
   if (!open) {
     return (
-      <Card icon={<SettingsIcon className="h-4 w-4" />} title="Change your details">
+      <Card icon={<SettingsIcon className="h-4 w-4" />} title="Edit your details">
         <div className="border-t border-line px-5 py-4">
           <p className="text-[12.5px] leading-relaxed text-ink-soft">
-            Moved district, finished your degree, got your category certificate? Update it here and
-            Sarathi works out every exam again straight away.
+            Update your details here if you move district, finish a course, or get a category
+            certificate. Your exams are checked again as soon as you save.
           </p>
           {saved ? (
             <p className="mt-2.5 rounded-[9px] bg-good-soft px-3.5 py-2 text-[12.5px] font-medium text-good">
-              Saved. Your exams have been judged again.
+              Saved. Your exams have been checked again.
             </p>
           ) : null}
           <button
@@ -173,7 +173,7 @@ export function ProfileEditor({ profile, token }: { profile: MyProfile; token: s
   }
 
   return (
-    <Card icon={<SettingsIcon className="h-4 w-4" />} title="Change your details">
+    <Card icon={<SettingsIcon className="h-4 w-4" />} title="Edit your details">
       <form onSubmit={onSubmit} className="border-t border-line px-5 py-5">
         <div className="flex flex-col gap-3.5">
           <Field label="Your full name">

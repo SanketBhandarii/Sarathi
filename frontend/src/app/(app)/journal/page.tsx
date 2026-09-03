@@ -87,8 +87,9 @@ export default async function JournalPage() {
       <div>
         <h1 className="text-[19px] font-semibold tracking-tight text-ink">Agent Journal</h1>
         <p className="mt-1 max-w-2xl text-[12.5px] leading-relaxed text-ink-soft">
-          Most nights Sarathi reads every notification, re-checks every quote against the original
-          pdf, and then writes to you about none of it. This page is the proof that it was working.
+          Sarathi checks every source each night and compares each saved rule against the original
+          PDF. On most nights nothing needs your attention, so it sends you nothing. This page
+          records what it checked on each run.
         </p>
       </div>
 

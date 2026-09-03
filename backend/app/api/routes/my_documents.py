@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import io
-from datetime import datetime
+from datetime import date, datetime
 
-from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile
 from PIL import Image
 from pydantic import BaseModel
 from sqlalchemy import select
@@ -11,10 +11,12 @@ from sqlalchemy.orm import Session
 
 from app.api.current_user import current_user
 from app.api.deps import get_db
+from app.db.repositories import students as students_repo
 from app.db.models import StudentDocument, User
 from app.documents.spec import KIND_LABEL, DocumentKind
 from app.documents.known_specs import every_body
 from app.documents.maker import CannotMeetSpec, make_document
+from app.documents.sheet import SheetDetails, SheetPicture, make_sheet
 from app.documents.storage import get_document_store, keep_master, read_master, viewable_now
 
 router = APIRouter(prefix="/me/documents", tags=["my documents"])
@@ -198,3 +200,67 @@ def sizes_for(
             )
         )
     return made
+
+
+@router.get("/sheet")
+def download_sheet(
+    user: User = Depends(current_user), db: Session = Depends(get_db)
+) -> Response:
+    student_id = _student_id(user)
+    row = students_repo.get_student(db, student_id)
+    if row is None:
+        raise HTTPException(status_code=404, detail="Please fill your details first.")
+
+    history = students_repo.to_history(row)
+    sizes = {
+        DocumentKind(record.kind): (record.width_px, record.height_px)
+        for record in db.scalars(
+            select(StudentDocument).where(StudentDocument.student_id == student_id)
+        ).all()
+    }
+
+    pictures = [
+        SheetPicture(
+            kind=kind,
+            label=KIND_LABEL[kind],
+            payload=read_master(student_id, kind),
+            width_px=sizes.get(kind, (None, None))[0],
+            height_px=sizes.get(kind, (None, None))[1],
+        )
+        for kind in DocumentKind
+    ]
+
+    details = SheetDetails(
+        name=row.name,
+        date_of_birth=row.date_of_birth,
+        category=row.category,
+        state=row.state,
+        district=row.district,
+        made_on=date.today(),
+        education=[
+            (entry.label, _education_line(entry)) for entry in history.entries
+        ],
+    )
+
+    pdf = make_sheet(details, pictures)
+    safe_name = "".join(ch for ch in row.name if ch.isalnum() or ch == " ").strip().replace(" ", "_")
+    return Response(
+        content=pdf,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f'attachment; filename="sarathi_documents_{safe_name or student_id}.pdf"'
+        },
+    )
+
+
+def _education_line(entry) -> str:
+    parts = [entry.shown_marks]
+    if entry.marks_kind.value == "cgpa" and entry.percentage is not None:
+        parts.append(f"about {entry.percentage:g}%")
+    if entry.board_or_university:
+        parts.append(entry.board_or_university)
+    if entry.passed_year:
+        parts.append(str(entry.passed_year))
+    elif not entry.is_completed:
+        parts.append("still studying")
+    return ", ".join(parts)
