@@ -20,7 +20,7 @@ export interface MasterDocument {
   height_px: number | null;
 }
 
-interface SizedFile {
+export interface SizedFile {
   source_id: string;
   body: string;
   needed: string;
@@ -55,16 +55,18 @@ function saveToDisk(base64: string, filename: string): void {
 
 function Slot({
   document: item,
+  made,
   token,
   onSaved,
 }: {
   document: MasterDocument;
+  made: SizedFile[];
   token: string;
   onSaved: (kind: Kind) => void;
 }) {
   const [saved, setSaved] = useState(Boolean(item.file_id));
   const [preview, setPreview] = useState<string | null>(item.view_url);
-  const [sizes, setSizes] = useState<SizedFile[]>([]);
+  const [sizes, setSizes] = useState<SizedFile[]>(made);
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
 
@@ -172,13 +174,14 @@ function Slot({
               />
             </label>
 
-            {saved && sizes.length === 0 ? (
+            {saved ? (
               <button
                 type="button"
                 onClick={loadSizes}
-                className="rounded-[9px] bg-brand px-3.5 py-2 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
+                disabled={busy}
+                className="cursor-pointer rounded-[9px] border border-line bg-page px-3.5 py-2 text-[12.5px] font-medium text-ink transition-colors hover:border-accent hover:text-accent disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Make every size
+                {busy ? "Working" : "Make the sizes again"}
               </button>
             ) : null}
           </div>
@@ -187,6 +190,12 @@ function Slot({
 
       {problem ? (
         <p className="mt-3 rounded-[8px] bg-stop-soft px-3 py-2 text-[12px] text-stop">{problem}</p>
+      ) : null}
+
+      {saved && sizes.length === 0 && !problem ? (
+        <p className="mt-3 rounded-[8px] bg-sun-soft px-3 py-2 text-[12px] text-sun">
+          Sarathi could not make the sizes for this picture. Press &quot;Make the sizes again&quot;.
+        </p>
       ) : null}
 
       {sizes.length > 0 ? (
@@ -288,9 +297,11 @@ function SheetButton({ token }: { token: string }) {
 
 export function MyFiles({
   documents,
+  sizes,
   token,
 }: {
   documents: MasterDocument[];
+  sizes: Record<string, SizedFile[]>;
   token: string;
 }) {
   const [added, setAdded] = useState<Set<Kind>>(
@@ -330,6 +341,7 @@ export function MyFiles({
         <Slot
           key={item.kind}
           document={item}
+          made={sizes[item.kind] ?? []}
           token={token}
           onSaved={(kind) => setAdded((current) => new Set(current).add(kind))}
         />

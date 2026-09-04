@@ -4,7 +4,7 @@ import { longDate } from "@/lib/format";
 import { currentUser } from "@/lib/session";
 import { todayDate } from "@/lib/today";
 
-import { MyFiles, type MasterDocument } from "./my-files";
+import { MyFiles, type MasterDocument, type SizedFile } from "./my-files";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +23,19 @@ async function loadDocuments(token: string): Promise<MasterDocument[] | null> {
   }
 }
 
+async function loadSizes(token: string, kind: string): Promise<SizedFile[]> {
+  try {
+    const response = await fetch(`${BASE}/me/documents/${kind}/sizes`, {
+      headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+    });
+    if (!response.ok) return [];
+    return (await response.json()) as SizedFile[];
+  } catch {
+    return [];
+  }
+}
+
 export default async function DocumentsPage() {
   const session = await currentUser();
   if (!session?.me.student_id) {
@@ -33,6 +46,13 @@ export default async function DocumentsPage() {
   if (!documents) {
     return <Offline hint="The document maker runs on the backend." />;
   }
+
+  const uploaded = documents.filter((one) => one.file_id);
+  const madeFor = Object.fromEntries(
+    await Promise.all(
+      uploaded.map(async (one) => [one.kind, await loadSizes(session.token, one.kind)] as const),
+    ),
+  ) as Record<string, SizedFile[]>;
 
   return (
     <div className="flex flex-col gap-6">
@@ -48,7 +68,7 @@ export default async function DocumentsPage() {
         icon={<FileIcon className="h-4 w-4" />}
         title="Your pictures"
       >
-        <MyFiles documents={documents} token={session.token} />
+        <MyFiles documents={documents} sizes={madeFor} token={session.token} />
       </Card>
 
       <p className="text-[11.5px] leading-relaxed text-ink-faint">
