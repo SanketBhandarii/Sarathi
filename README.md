@@ -46,7 +46,10 @@ A judge who knows nothing about Indian exams can verify the whole system in thir
 
 ## Architecture
 
-See [`docs/architecture.md`](docs/architecture.md) for the full diagram.
+See [`docs/architecture.md`](docs/architecture.md) for the full diagram, and
+[**`docs/sarathi-product-guide.pdf`**](docs/sarathi-product-guide.pdf) for the plain-language guide:
+every feature, the system flow, the data flow, where each file lives, and how to add a new exam
+source. Start there if you are joining the project.
 
 ```
 official sites ──► cache PDFs ──► classify ──► READER ⇄ CHECKER ──► verify in code
@@ -98,10 +101,12 @@ Layers 1 and 2 exist because of something found during development: planted erro
 | | |
 |---|---|
 | **Exam Radar** | Every exam in four layers: Central, your State, your City, other states open to all. Nothing is hidden; exams you cannot take are shown with the reason. |
-| **Verdict engine** | Age with category relaxation, qualification **level**, marks, fees, domicile. Six buckets including "closed for now, it runs again" — because telling a student CGL is "not for you" would be a lie. |
+| **Result engine** | Age with category relaxation, qualification **level**, marks, fees, domicile. Six answers including "closed for now, it runs again", because telling a student CGL is "not for you" would be false. |
+| **It says when it does not know** | If no closing date can be found in a notification, the exam is never shown as open. It says the date could not be found and links to the commission's page. Combined relaxation rows are read correctly, so a row reading "PwD + OBC" never applies to an OBC candidate who is not disabled. |
+| **Your profile** | Click your photo to see everything Sarathi holds about you, edit any of it, and have every exam checked again. Sign out lives here too. |
 | **Education ladder** | 10th, 12th, ITI, Diploma, Graduation, PG. Percentage or CGPA with live conversion. A diploma does not satisfy a degree requirement, and desirable qualifications never block. |
 | **Document maker** | Reads the size rules out of the notification, then turns a phone photo into the exact pixels and byte range. Per commission, because SSC wants a 236×79 signature and IBPS wants 140×60. A one page PDF sheet holds everything together, watermarked so nobody uploads it by mistake. |
-| **Agent Journal** | Every nightly run recorded: sources checked, quotes re-verified, rules evaluated, messages sent. Usually zero. |
+| **Agent Journal** | Every nightly run recorded: sources checked, quotes re-verified, rules evaluated, messages sent. Usually zero. The run happens on its own at 02:15 IST. |
 | **When I was wrong** | Compares two readings of a notification and says plainly what changed, with the clause from each. A date that moves *earlier* is flagged differently, because only that one costs a student time. |
 | **Deadlines + age cliff** | "You turn 34 on 14 November 2028. That day one exam closes to you permanently." |
 | **Fee savings** | An SC candidate pays ₹175 where others pay ₹850. Most never realise. |
@@ -165,8 +170,12 @@ TWILIO_ACCOUNT_SID=            # whatsapp delivery
 .venv/Scripts/python -m scripts.classify_cached     # notification or tender?
 .venv/Scripts/python -m scripts.refresh_calendar    # SSC exam calendar
 .venv/Scripts/python -m scripts.process_document    # read the rules out
+.venv/Scripts/python -m scripts.sync_to_db          # put the rules in postgres
 .venv/Scripts/python -m scripts.nightly             # one agent run
 ```
+
+`sync_to_db` is not optional. Reading a document writes the rules to a JSON file; until you sync,
+the website will not show them.
 
 Cached PDFs are committed on purpose. Government websites move pages without warning, and nothing here should depend on one being awake.
 
@@ -177,6 +186,11 @@ cd backend
 .venv/Scripts/python -m pytest tests/ -q
 ```
 
+Two of those tests read the frontend rather than the backend. They check that every colour class
+a page uses is actually defined in `globals.css`, and refuse white text on a background that
+paints nothing. They exist because a download button once used an undefined colour and rendered
+as white text on a white card, invisible for days.
+
 204 tests. They never send a real email or a real message — a fixture replaces the mailer for the whole suite.
 
 ---
@@ -185,7 +199,8 @@ cd backend
 
 - **MPSC publishes scanned images.** Their notifications are photographs of paper with no extractable text. Those exams appear in the Radar with their real title, date and official link, marked plainly as unread. Reading them needs a vision model.
 - **The "When I was wrong" page is labelled.** We have read one version of each notification so far, so that screen says in plain words that the earlier reading was made to demonstrate the behaviour. The comparison code is the same either way.
-- **Six sources, not fifty.** SSC, UPSC, IBPS, MPSC, India Post GDS and the SSC exam calendar. Adding a seventh is a small, documented file.
+- **Six sources, not fifty.** SSC, UPSC, IBPS, MPSC, India Post GDS and the SSC exam calendar. Adding a seventh is a small, documented file, and the product guide walks through it step by step. This is the biggest weakness: usually only one or two exams are open at once, so the Radar looks sparse.
+- **Not deployed.** Everything runs on one machine. Moving the nightly run into the cloud needs AWS credits.
 - **UPSC recruitment advertisements list many posts** with different rules each. Sarathi handles single-rule exam notifications well and says so when it cannot read a multi-post advert cleanly.
 
 ## Licence
