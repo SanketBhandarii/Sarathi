@@ -8,6 +8,7 @@ import { currentUser } from "@/lib/session";
 import { todayDate } from "@/lib/today";
 
 import { ProfileEditor } from "./editor";
+import { SignOut } from "./sign-out";
 
 export const dynamic = "force-dynamic";
 
@@ -209,6 +210,8 @@ export default async function MyProfilePage() {
           </Card>
 
           <ProfileEditor profile={profile} token={session.token} />
+
+          <SignOut email={profile.email} />
         </div>
       </div>
     </div>
