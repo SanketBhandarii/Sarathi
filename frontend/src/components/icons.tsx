@@ -47,6 +47,10 @@ export const PlusIcon = ({ className = "h-4 w-4" }: P) => (
   <svg className={className} viewBox="0 0 24 24" {...s}><path d="M12 5.5v13M5.5 12h13" /></svg>
 );
 
+export const DownloadIcon = ({ className = "h-4 w-4" }: P) => (
+  <svg className={className} viewBox="0 0 24 24" {...s}><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 19h14" /></svg>
+);
+
 export const CaretIcon = ({ className = "h-3.5 w-3.5" }: P) => (
   <svg className={className} viewBox="0 0 24 24" {...s}><path d="m6.5 9.5 5.5 5.5 5.5-5.5" /></svg>
 );

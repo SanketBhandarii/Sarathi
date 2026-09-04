@@ -94,21 +94,21 @@ export default async function JournalPage() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-card border border-line bg-surface px-4 py-4">
+        <div className="rounded-card border border-line bg-shell px-4 py-4">
           <p className="text-[24px] font-semibold leading-none tabular-nums text-ink">
             {totalChecks.toLocaleString("en-IN")}
           </p>
           <p className="mt-2 text-[12px] font-medium text-ink">checks run</p>
           <p className="mt-0.5 text-[11px] text-ink-soft">across the runs below</p>
         </div>
-        <div className="rounded-card border border-line bg-surface px-4 py-4">
+        <div className="rounded-card border border-line bg-shell px-4 py-4">
           <p className="text-[24px] font-semibold leading-none tabular-nums text-ink">{silent}</p>
           <p className="mt-2 text-[12px] font-medium text-ink">
             night{silent === 1 ? "" : "s"} it stayed quiet
           </p>
           <p className="mt-0.5 text-[11px] text-ink-soft">nothing needed you</p>
         </div>
-        <div className="rounded-card border border-line bg-surface px-4 py-4">
+        <div className="rounded-card border border-line bg-shell px-4 py-4">
           <p className="text-[24px] font-semibold leading-none tabular-nums text-ink">
             {runs.reduce((sum, run) => sum + run.messages_sent, 0)}
           </p>

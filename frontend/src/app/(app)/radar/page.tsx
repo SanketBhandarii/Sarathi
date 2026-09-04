@@ -55,7 +55,7 @@ export default async function RadarPage() {
           key={layer}
           title={entries[0].layer_label}
           action={
-            <span className="rounded-pill bg-brand-soft px-2.5 py-1 text-[11px] font-medium text-ink-soft">
+            <span className="rounded-pill bg-accent-soft px-2.5 py-1 text-[11px] font-medium text-ink-soft">
               {entries.length}
             </span>
           }

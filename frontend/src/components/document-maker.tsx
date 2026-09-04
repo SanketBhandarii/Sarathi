@@ -153,7 +153,7 @@ function SpecRow({
           <a
             href={`data:image/jpeg;base64,${made.image_base64}`}
             download={`${spec.kind}.jpg`}
-            className="rounded-[8px] bg-brand px-3 py-1.5 text-[12px] font-medium text-white transition-opacity hover:opacity-90"
+            className="rounded-[8px] bg-accent px-3 py-1.5 text-[12px] font-medium text-white transition-opacity hover:opacity-90"
           >
             Save this file
           </a>

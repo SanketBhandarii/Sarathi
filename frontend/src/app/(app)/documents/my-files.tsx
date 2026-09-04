@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { PlusIcon } from "@/components/icons";
+import { DownloadIcon, PlusIcon } from "@/components/icons";
 import { readProblem } from "@/lib/auth";
 
 const BASE = process.env.NEXT_PUBLIC_API_BASE ?? "http://127.0.0.1:8020";
@@ -238,9 +238,10 @@ function Slot({
                 <button
                   type="button"
                   onClick={() => saveToDisk(size.image_base64, `${item.kind}_${size.source_id}.jpg`)}
-                  className="mt-2.5 block w-full cursor-pointer rounded-[8px] bg-brand px-3 py-1.5 text-center text-[11.5px] font-medium text-white transition-opacity hover:opacity-90"
+                  className="mt-2.5 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-[8px] bg-accent px-3 py-2 text-center text-[12px] font-medium text-white transition-colors hover:bg-accent-hover"
                 >
-                  Save
+                  <DownloadIcon className="h-3.5 w-3.5" />
+                  Download for {size.source_id.toUpperCase()}
                 </button>
               </div>
             ))}
